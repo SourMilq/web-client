@@ -21997,7 +21997,7 @@
 	
 	var _shopList2 = _interopRequireDefault(_shopList);
 	
-	var _shopForm = __webpack_require__(/*! ./shopForm.jsx */ 225);
+	var _shopForm = __webpack_require__(/*! ./shopForm.jsx */ 224);
 	
 	var _shopForm2 = _interopRequireDefault(_shopForm);
 	
@@ -22008,7 +22008,7 @@
 	
 	        getInitialState: function getInitialState() {
 	                return {
-	                        data: [{ "id": "00001", "itemName": "Apple" }, { "id": "00002", "itemName": "Orange" }, { "id": "00003", "itemName": "Weiner" }]
+	                        data: [{ "id": "00001", "itemName": "Apple", "price": "1.00", "quantity": "2" }, { "id": "00002", "itemName": "Orange", "price": "1.00", "quantity": "2" }, { "id": "00003", "itemName": "Weiner", "price": "1.00", "quantity": "2" }]
 	                };
 	        },
 	        generateId: function generateId() {
@@ -29002,7 +29002,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _shopItem = __webpack_require__(/*! ./shopItem.jsx */ 224);
+	var _shopItem = __webpack_require__(/*! ./shopItem.jsx */ 225);
 	
 	var _shopItem2 = _interopRequireDefault(_shopItem);
 	
@@ -29021,7 +29021,7 @@
 	        },
 	        render: function render() {
 	                var listNodes = this.props.data.map(function (listItem) {
-	                        return _react2.default.createElement(_shopItem2.default, { key: listItem.id, nodeId: listItem.id, itemName: listItem.itemName, complete: listItem.complete, removeNode: this.removeNode, toggleComplete: this.toggleComplete });
+	                        return _react2.default.createElement(_shopItem2.default, { key: listItem.id, nodeId: listItem.id, itemName: listItem.itemName, price: listItem.price, quantity: listItem.quantity, removeNode: this.removeNode, toggleComplete: this.toggleComplete });
 	                }, this);
 	                return _react2.default.createElement(
 	                        'ul',
@@ -29035,83 +29035,6 @@
 
 /***/ },
 /* 224 */
-/*!*************************************!*\
-  !*** ./src/client/app/shopItem.jsx ***!
-  \*************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	        value: true
-	});
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var ShopItem = _react2.default.createClass({
-	        displayName: 'ShopItem',
-	
-	        removeNode: function removeNode(e) {
-	                e.preventDefault();
-	                this.props.removeNode(this.props.nodeId);
-	                return;
-	        },
-	        toggleComplete: function toggleComplete(e) {
-	                e.preventDefault();
-	                this.props.removeNode(this.props.nodeId);
-	                return;
-	        },
-	        updateClass: function updateClass() {},
-	        render: function render() {
-	                var classes = 'list-group-item clearfix';
-	
-	                return _react2.default.createElement(
-	                        'li',
-	                        { className: classes },
-	                        _react2.default.createElement(
-	                                'div',
-	                                { className: 'row' },
-	                                _react2.default.createElement(
-	                                        'div',
-	                                        { className: 'item-name col-xs-3 col-xl-3 col-md-3 pull-left' },
-	                                        ' ',
-	                                        this.props.itemName,
-	                                        ' '
-	                                ),
-	                                _react2.default.createElement(
-	                                        'div',
-	                                        { className: 'item-name-2 col-xs-6 col-xl-6 col-md-6 pull-center' },
-	                                        ' ',
-	                                        this.props.itemName,
-	                                        ' '
-	                                ),
-	                                _react2.default.createElement(
-	                                        'div',
-	                                        { className: 'item-name-3 col-xs-3 col-xl-3 col-md-3 pull-right', role: 'group' },
-	                                        _react2.default.createElement(
-	                                                'button',
-	                                                { type: 'button', className: 'btn btn-xs btn-success img-circle pull-right', onClick: this.toggleComplete },
-	                                                '\u2713'
-	                                        ),
-	                                        _react2.default.createElement(
-	                                                'button',
-	                                                { type: 'button', className: 'btn btn-xs btn-danger img-circle pull-right', onClick: this.removeNode },
-	                                                '\uFF38'
-	                                        )
-	                                )
-	                        )
-	                );
-	        }
-	});
-	
-	exports.default = ShopItem;
-
-/***/ },
-/* 225 */
 /*!*************************************!*\
   !*** ./src/client/app/shopForm.jsx ***!
   \*************************************/
@@ -29168,7 +29091,7 @@
 	                                                _react2.default.createElement(
 	                                                        'div',
 	                                                        { className: 'col-md-10' },
-	                                                        _react2.default.createElement('input', { type: 'text', id: 'item', ref: 'item', className: 'form-control', placeholder: 'What do you need to do?' })
+	                                                        _react2.default.createElement('input', { type: 'text', id: 'item', ref: 'item', className: 'form-control', placeholder: 'Item Name' })
 	                                                )
 	                                        ),
 	                                        _react2.default.createElement(
@@ -29187,6 +29110,90 @@
 	});
 	
 	exports.default = ShopForm;
+
+/***/ },
+/* 225 */
+/*!*************************************!*\
+  !*** ./src/client/app/shopItem.jsx ***!
+  \*************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	        value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var ShopItem = _react2.default.createClass({
+	        displayName: 'ShopItem',
+	
+	        removeNode: function removeNode(e) {
+	                e.preventDefault();
+	                this.props.removeNode(this.props.nodeId);
+	                return;
+	        },
+	        toggleComplete: function toggleComplete(e) {
+	                e.preventDefault();
+	                this.props.removeNode(this.props.nodeId);
+	                return;
+	        },
+	        updateClass: function updateClass() {},
+	        render: function render() {
+	                var classes = 'list-group-item clearfix';
+	
+	                return _react2.default.createElement(
+	                        'li',
+	                        { className: classes },
+	                        _react2.default.createElement(
+	                                'div',
+	                                { className: 'row' },
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'item-name col-xs-3 col-xl-3 col-md-3 pull-left' },
+	                                        ' ',
+	                                        this.props.itemName,
+	                                        ' '
+	                                ),
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'item-name-2 col-xs-3 col-xl-3 col-md-3 pull-center' },
+	                                        ' ',
+	                                        this.props.price,
+	                                        ' '
+	                                ),
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'item-name-2 col-xs-3 col-xl-3 col-md-3 pull-center' },
+	                                        ' ',
+	                                        this.props.quantity,
+	                                        ' '
+	                                ),
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'item-name-3 col-xs-3 col-xl-3 col-md-3 pull-right', role: 'group' },
+	                                        _react2.default.createElement(
+	                                                'button',
+	                                                { type: 'button', className: 'btn btn-xs btn-success img-circle pull-right', onClick: this.toggleComplete },
+	                                                '\u2713'
+	                                        ),
+	                                        _react2.default.createElement(
+	                                                'button',
+	                                                { type: 'button', className: 'btn btn-xs btn-danger img-circle pull-right', onClick: this.removeNode },
+	                                                '\uFF38'
+	                                        )
+	                                )
+	                        )
+	                );
+	        }
+	});
+	
+	exports.default = ShopItem;
 
 /***/ }
 /******/ ]);

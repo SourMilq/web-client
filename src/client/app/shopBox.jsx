@@ -8,9 +8,9 @@ var ShopBox = React.createClass({
         getInitialState: function () {
                 return {
                         data: [
-                                {"id":"00001","itemName":"Apple"},
-                                {"id":"00002","itemName":"Orange"},
-        {"id":"00003","itemName":"Weiner"}
+                                {"id":"00001","itemName":"Apple", "price":"1.00", "quantity":"2"},
+                                {"id":"00002","itemName":"Orange", "price":"1.00", "quantity":"2"},
+                                {"id":"00003","itemName":"Weiner", "price":"1.00", "quantity":"2"},
                         ]
                 };
         },

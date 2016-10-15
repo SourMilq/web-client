@@ -19,10 +19,10 @@ var ShopForm = React.createClass({
                                 <div className="clearfix">
                                         <form className="shopForm form-horizontal" onSubmit={this.doSubmit}>
                                                 <div className="form-group">
-                                                        <label htmlFor="item" className="col-md-2 control-label">Item</label>
+                                                        <label htmlFor="item" className="col-md-2 control-label">Item</label>                                                
                                                         <div className="col-md-10">
-                                                                <input type="text" id="item" ref="item" className="form-control" placeholder="What do you need to do?" />
-                                                        </div>
+                                                                <input type="text" id="item" ref="item" className="form-control" placeholder="Item Name" />
+                                                        </div>                                                                                                            
                                                 </div>
                                                 <div className="row">
                                                         <div className="col-md-10 col-md-offset-2 text-right">
