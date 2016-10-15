@@ -1,14 +1,16 @@
 import React from 'react';
+import {Table, Column, Cell} from 'fixed-data-table';
 import ShopList from './shopList.jsx';
 import ShopForm from './shopForm.jsx';
+
 
 var ShopBox = React.createClass({
         getInitialState: function () {
                 return {
                         data: [
-                                {"id":"00001","item":"Apple","complete":"false"},
-                                {"id":"00002","item":"Orange","complete":"false"},
-        {"id":"00003","item":"Weiner","complete":"false"}
+                                {"id":"00001","item":"Apple"},
+                                {"id":"00002","item":"Orange"},
+        {"id":"00003","item":"Weiner"}
                         ]
                 };
         },
@@ -26,8 +28,7 @@ var ShopBox = React.createClass({
         handleSubmit: function (item) {
                 var data = this.state.data;
                 var id = this.generateId().toString();
-                var complete = 'false';
-                data = data.concat([{id, item, complete}]);
+                data = data.concat([{id, item}]);
                 this.setState({data});
         },
         handleToggleComplete: function (nodeId) {
@@ -42,10 +43,13 @@ var ShopBox = React.createClass({
                 return;
         },
         render: function() {
-                return (
+                var data = this.state.data;                
+                var length = data.length;
+                console.log(length);
+                return (                        
                         <div className="well">
                                 <h1 className="vert-offset-top-0">Shopping List:</h1>
-                                <ShopList data={this.state.data} removeNode={this.handleNodeRemoval} toggleComplete={this.handleToggleComplete} />
+                                <ShopList data={data} removeNode={this.handleNodeRemoval} toggleComplete={this.handleToggleComplete} />
                                 <ShopForm onItemSubmit={this.handleSubmit} />
                         </div>
                 );
