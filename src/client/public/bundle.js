@@ -29079,21 +29079,21 @@
 	                                { className: 'row' },
 	                                _react2.default.createElement(
 	                                        'div',
-	                                        { className: 'item-name col-md-3 pull-left' },
+	                                        { className: 'item-name col-xs-3 col-xl-3 col-md-3 pull-left' },
 	                                        ' ',
 	                                        this.props.item,
 	                                        ' '
 	                                ),
 	                                _react2.default.createElement(
 	                                        'div',
-	                                        { className: 'item-name-2 col-md-6 pull-center' },
+	                                        { className: 'item-name-2 col-xs-6 col-xl-6 col-md-6 pull-center' },
 	                                        ' ',
 	                                        this.props.item,
 	                                        ' '
 	                                ),
 	                                _react2.default.createElement(
 	                                        'div',
-	                                        { className: 'item-name-3 col-md-3 pull-right', role: 'group' },
+	                                        { className: 'item-name-3 col-xs-3 col-xl-3 col-md-3 pull-right', role: 'group' },
 	                                        _react2.default.createElement(
 	                                                'button',
 	                                                { type: 'button', className: 'btn btn-xs btn-success img-circle pull-right', onClick: this.toggleComplete },
