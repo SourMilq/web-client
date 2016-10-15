@@ -13,7 +13,7 @@ var ShopList = React.createClass({
         render: function() {
                 var listNodes = this.props.data.map(function (listItem) {
                         return (
-                                <ShopItem key={listItem.id} nodeId={listItem.id} item={listItem.item} complete={listItem.complete} removeNode={this.removeNode} toggleComplete={this.toggleComplete} />
+                                <ShopItem key={listItem.id} nodeId={listItem.id}  itemName={listItem.itemName} complete={listItem.complete} removeNode={this.removeNode} toggleComplete={this.toggleComplete} />
                         );
                 },this);
                 return (

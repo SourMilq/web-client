@@ -22008,7 +22008,7 @@
 	
 	        getInitialState: function getInitialState() {
 	                return {
-	                        data: [{ "id": "00001", "item": "Apple" }, { "id": "00002", "item": "Orange" }, { "id": "00003", "item": "Weiner" }]
+	                        data: [{ "id": "00001", "itemName": "Apple" }, { "id": "00002", "itemName": "Orange" }, { "id": "00003", "itemName": "Weiner" }]
 	                };
 	        },
 	        generateId: function generateId() {
@@ -29021,7 +29021,7 @@
 	        },
 	        render: function render() {
 	                var listNodes = this.props.data.map(function (listItem) {
-	                        return _react2.default.createElement(_shopItem2.default, { key: listItem.id, nodeId: listItem.id, item: listItem.item, complete: listItem.complete, removeNode: this.removeNode, toggleComplete: this.toggleComplete });
+	                        return _react2.default.createElement(_shopItem2.default, { key: listItem.id, nodeId: listItem.id, itemName: listItem.itemName, complete: listItem.complete, removeNode: this.removeNode, toggleComplete: this.toggleComplete });
 	                }, this);
 	                return _react2.default.createElement(
 	                        'ul',
@@ -29068,9 +29068,7 @@
 	        updateClass: function updateClass() {},
 	        render: function render() {
 	                var classes = 'list-group-item clearfix';
-	                // if (this.props.complete === 'true') {
-	                //         classes = classes + ' list-group-item-success';
-	                // }
+	
 	                return _react2.default.createElement(
 	                        'li',
 	                        { className: classes },
@@ -29081,14 +29079,14 @@
 	                                        'div',
 	                                        { className: 'item-name col-xs-3 col-xl-3 col-md-3 pull-left' },
 	                                        ' ',
-	                                        this.props.item,
+	                                        this.props.itemName,
 	                                        ' '
 	                                ),
 	                                _react2.default.createElement(
 	                                        'div',
 	                                        { className: 'item-name-2 col-xs-6 col-xl-6 col-md-6 pull-center' },
 	                                        ' ',
-	                                        this.props.item,
+	                                        this.props.itemName,
 	                                        ' '
 	                                ),
 	                                _react2.default.createElement(
