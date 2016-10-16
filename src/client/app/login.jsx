@@ -5,9 +5,31 @@ var Login = React.createClass({
 		doLogin: function (e) {
 			e.preventDefault();
 			var username = ReactDOM.findDOMNode(this.refs.username).value.trim();
-			var password = ReactDOM.findDOMNode(this.refs.password).value.trim();			
-			this.props.onLogin("testtoken");
-			return;
+			var password = ReactDOM.findDOMNode(this.refs.password).value.trim();
+			var me = this;
+
+			var data = {			    			    
+			    "username": username,
+			    "password": password
+			  }
+
+			$.ajax({
+				method: "POST",			    
+			    url: 'http://localhost:3000/v1/user',			    			    			         			   
+			    data: data
+			  })
+			  .done(function(data) {
+			    console.log('successfully registered');
+			    var authData = JSON.parse(data);
+			    var token = authData.token;
+			    console.log(token);
+			    me.props.onLogin(token);
+			    return;
+			  })
+			  .fail(function(err) {
+			    console.log('failed to register');
+			    return;
+			  });			
 		},
 		doCreateUser: function (e) {
 			e.preventDefault();
@@ -25,8 +47,6 @@ var Login = React.createClass({
 			  }
 			console.log(data);
 
-			var token;
-
 			$.ajax({
 				method: "POST",			    
 			    url: 'http://localhost:3000/v1/user/create/',			    			    			         			   
@@ -35,16 +55,14 @@ var Login = React.createClass({
 			  .done(function(data) {
 			    console.log('successfully registered');
 			    var authData = JSON.parse(data);
-			    token = authData.token;	
+			    var token = authData.token;	
 			    me.props.onLogin(token);				    		   
 			    return;
 			  })
 			  .fail(function(err) {
 			    console.log('failed to register');
 			    return;
-			  });
-			
-						  			  	
+			  });			  			  	
 		},
         render: function() {                              
                 return (

@@ -22017,7 +22017,7 @@
 	        getInitialState: function getInitialState() {
 	                return {
 	                        loggedIn: false,
-	                        authToke: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiZmlyc3ROYW1lIiwibGFzdF9uYW1lIjoibGFzdE5hbWUiLCJlbWFpbCI6InRlbXAtZW1haWxAZ21haWwuY29tIiwidXNlcm5hbWUiOiJ0ZXN0IiwicGFzc3dvcmQiOiJwYXNzIn0.77dKU0pq1xfA0zbV3ASl4QV-K43noKE7Gak8Ana2rhk",
+	                        authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiZmlyc3ROYW1lIiwibGFzdF9uYW1lIjoibGFzdE5hbWUiLCJlbWFpbCI6InRlbXAtZW1haWxAZ21haWwuY29tIiwidXNlcm5hbWUiOiJ0ZXN0IiwicGFzc3dvcmQiOiJwYXNzIn0.77dKU0pq1xfA0zbV3ASl4QV-K43noKE7Gak8Ana2rhk",
 	                        data: [{ "id": "00001", "itemName": "Apple", "price": "1.00", "quantity": "2" }, { "id": "00002", "itemName": "Orange", "price": "1.00", "quantity": "2" }, { "id": "00003", "itemName": "Weiner", "price": "1.00", "quantity": "2" }]
 	                };
 	        },
@@ -22054,8 +22054,25 @@
 	                return;
 	        },
 	        handleLogin: function handleLogin(token) {
-	                this.setState({ authToke: token });
+	                this.setState({ authToken: token });
 	                this.setState({ loggedIn: true });
+	        },
+	        getList: function getList() {
+	                var data = { "token": this.state.authToken };
+	
+	                $.ajax({
+	                        method: "POST",
+	                        url: 'http://localhost:3000/v1/list/2',
+	                        data: data
+	                }).done(function (data) {
+	                        console.log('successfully registered');
+	                        var authData = JSON.parse(data);
+	                        console.log(authData);
+	                        return;
+	                }).fail(function (err) {
+	                        console.log('failed');
+	                        return;
+	                });
 	        },
 	        render: function render() {
 	                var loggedIn = this.state.loggedIn;;
@@ -22064,6 +22081,8 @@
 	                        var data = this.state.data;
 	                        var length = data.length;
 	                        console.log(length);
+	
+	                        this.getList();
 	                        return _react2.default.createElement(
 	                                'div',
 	                                null,
@@ -29359,8 +29378,28 @@
 			e.preventDefault();
 			var username = _reactDom2.default.findDOMNode(this.refs.username).value.trim();
 			var password = _reactDom2.default.findDOMNode(this.refs.password).value.trim();
-			this.props.onLogin("testtoken");
-			return;
+			var me = this;
+	
+			var data = {
+				"username": username,
+				"password": password
+			};
+	
+			$.ajax({
+				method: "POST",
+				url: 'http://localhost:3000/v1/user',
+				data: data
+			}).done(function (data) {
+				console.log('successfully registered');
+				var authData = JSON.parse(data);
+				var token = authData.token;
+				console.log(token);
+				me.props.onLogin(token);
+				return;
+			}).fail(function (err) {
+				console.log('failed to register');
+				return;
+			});
 		},
 		doCreateUser: function doCreateUser(e) {
 			e.preventDefault();
@@ -29378,8 +29417,6 @@
 			};
 			console.log(data);
 	
-			var token;
-	
 			$.ajax({
 				method: "POST",
 				url: 'http://localhost:3000/v1/user/create/',
@@ -29387,7 +29424,7 @@
 			}).done(function (data) {
 				console.log('successfully registered');
 				var authData = JSON.parse(data);
-				token = authData.token;
+				var token = authData.token;
 				me.props.onLogin(token);
 				return;
 			}).fail(function (err) {
