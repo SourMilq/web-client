@@ -10,7 +10,7 @@ var ShopBox = React.createClass({
         getInitialState: function () {
                 return {
                         loggedIn : false,
-                        authToke: "123",
+                        authToke: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiZmlyc3ROYW1lIiwibGFzdF9uYW1lIjoibGFzdE5hbWUiLCJlbWFpbCI6InRlbXAtZW1haWxAZ21haWwuY29tIiwidXNlcm5hbWUiOiJ0ZXN0IiwicGFzc3dvcmQiOiJwYXNzIn0.77dKU0pq1xfA0zbV3ASl4QV-K43noKE7Gak8Ana2rhk",
                         data: [
                                 {"id":"00001","itemName":"Apple", "price":"1.00", "quantity":"2"},
                                 {"id":"00002","itemName":"Orange", "price":"1.00", "quantity":"2"},
@@ -50,9 +50,8 @@ var ShopBox = React.createClass({
                 this.setState({data});
                 return;
         },
-        handleLogin: function (username, password) {
-                console.log(username);
-                console.log(password);
+        handleLogin: function (token) {
+                this.setState({authToke: token})
                 this.setState({loggedIn: true})
         },
         render: function() {                

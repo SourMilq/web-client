@@ -22017,7 +22017,7 @@
 	        getInitialState: function getInitialState() {
 	                return {
 	                        loggedIn: false,
-	                        authToke: "123",
+	                        authToke: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiZmlyc3ROYW1lIiwibGFzdF9uYW1lIjoibGFzdE5hbWUiLCJlbWFpbCI6InRlbXAtZW1haWxAZ21haWwuY29tIiwidXNlcm5hbWUiOiJ0ZXN0IiwicGFzc3dvcmQiOiJwYXNzIn0.77dKU0pq1xfA0zbV3ASl4QV-K43noKE7Gak8Ana2rhk",
 	                        data: [{ "id": "00001", "itemName": "Apple", "price": "1.00", "quantity": "2" }, { "id": "00002", "itemName": "Orange", "price": "1.00", "quantity": "2" }, { "id": "00003", "itemName": "Weiner", "price": "1.00", "quantity": "2" }]
 	                };
 	        },
@@ -22053,9 +22053,8 @@
 	                this.setState({ data: data });
 	                return;
 	        },
-	        handleLogin: function handleLogin(username, password) {
-	                console.log(username);
-	                console.log(password);
+	        handleLogin: function handleLogin(token) {
+	                this.setState({ authToke: token });
 	                this.setState({ loggedIn: true });
 	        },
 	        render: function render() {
@@ -29360,7 +29359,7 @@
 			e.preventDefault();
 			var username = _reactDom2.default.findDOMNode(this.refs.username).value.trim();
 			var password = _reactDom2.default.findDOMNode(this.refs.password).value.trim();
-			this.props.onLogin(username, password);
+			this.props.onLogin("testtoken");
 			return;
 		},
 		doCreateUser: function doCreateUser(e) {
@@ -29368,26 +29367,28 @@
 	
 			var username = _reactDom2.default.findDOMNode(this.refs.username).value.trim();
 			var password = _reactDom2.default.findDOMNode(this.refs.password).value.trim();
+			var me = this;
 	
 			var data = {
-				first_name: "firstName",
-				last_name: "lastName",
-				email: "temp-email@gmail.com",
-				username: username,
-				password: password
+				"first_name": "firstName",
+				"last_name": "lastName",
+				"email": "temp-email@gmail.com",
+				"username": username,
+				"password": password
 			};
 			console.log(data);
+	
+			var token;
+	
 			$.ajax({
 				method: "POST",
-				url: 'http://f3a5a098.ngrok.io/v1/user/create',
-				dataType: 'json',
-				headers: {
-					"Content-Type": "application/json"
-				},
+				url: 'http://localhost:3000/v1/user/create/',
 				data: data
 			}).done(function (data) {
 				console.log('successfully registered');
-				console.log(data);
+				var authData = JSON.parse(data);
+				token = authData.token;
+				me.props.onLogin(token);
 				return;
 			}).fail(function (err) {
 				console.log('failed to register');

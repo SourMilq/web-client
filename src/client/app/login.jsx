@@ -6,41 +6,45 @@ var Login = React.createClass({
 			e.preventDefault();
 			var username = ReactDOM.findDOMNode(this.refs.username).value.trim();
 			var password = ReactDOM.findDOMNode(this.refs.password).value.trim();			
-			this.props.onLogin(username, password);
+			this.props.onLogin("testtoken");
 			return;
 		},
 		doCreateUser: function (e) {
 			e.preventDefault();
 			
 			var username = ReactDOM.findDOMNode(this.refs.username).value.trim();
-			var password = ReactDOM.findDOMNode(this.refs.password).value.trim();	
+			var password = ReactDOM.findDOMNode(this.refs.password).value.trim();
+			var me = this;	
 
 			var data = {
-			    first_name: "firstName",
-			    last_name: "lastName",
-			    email: "temp-email@gmail.com",			    
-			    username: username,
-			    password: password
+			    "first_name": "firstName",
+			    "last_name": "lastName",
+			    "email": "temp-email@gmail.com",			    
+			    "username": username,
+			    "password": password
 			  }
 			console.log(data);
+
+			var token;
+
 			$.ajax({
 				method: "POST",			    
-			    url: 'http://f3a5a098.ngrok.io/v1/user/create',			    
-			    dataType: 'json',
-			    headers: {			    
-        		"Content-Type":"application/json"        		
-    			},
+			    url: 'http://localhost:3000/v1/user/create/',			    			    			         			   
 			    data: data
 			  })
 			  .done(function(data) {
 			    console.log('successfully registered');
-			    console.log(data);
+			    var authData = JSON.parse(data);
+			    token = authData.token;	
+			    me.props.onLogin(token);				    		   
 			    return;
 			  })
 			  .fail(function(err) {
 			    console.log('failed to register');
 			    return;
-			  });			
+			  });
+			
+						  			  	
 		},
         render: function() {                              
                 return (
