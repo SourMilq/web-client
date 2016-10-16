@@ -22042,6 +22042,7 @@
 	        },
 	        handleSubmit: function handleSubmit(item, price, quantity) {
 	                // var data = this.state.data;
+	                var me = this;
 	
 	                var itemPrice = price;
 	                var itemQuantity = quantity;
@@ -22061,6 +22062,7 @@
 	                        data: data
 	                }).done(function (data) {
 	                        console.log('successfully add to list');
+	                        me.sync();
 	                        return;
 	                }).fail(function (err) {
 	                        console.log('failed');
@@ -22107,30 +22109,31 @@
 	                });
 	        },
 	        populateList: function populateList(listId) {
-	                var data = { "token": this.state.authToken };
+	                var sendData = { "token": this.state.authToken };
+	                var me = this;
 	
 	                $.ajax({
 	                        method: "POST",
 	                        url: 'http://localhost:3000/v1/list/' + listId,
-	                        data: data
-	                }).done(function (data) {
+	                        data: sendData
+	                }).done(function (dataGet) {
 	                        console.log('successfully retrieved grocery list');
-	                        console.log(data);
-	                        if (data == '') {
+	                        if (dataGet == '') {
 	                                return;
 	                        };
-	                        var list = JSON.parse(data);
-	                        var newData = [];
+	                        var list = JSON.parse(dataGet);
+	                        console.log(list);
+	                        var data = [];
 	
 	                        for (var i = 0; i < list.length; i++) {
-	                                var id = list.id;
-	                                var itemName = list.name;
-	                                var price = list.price;
-	                                var quantity = list.quantity;
-	                                newData = newData.concat([{ id: id, itemName: itemName, price: price, quantity: quantity }]);
+	                                var id = list[i].id;
+	                                var itemName = list[i].name;
+	                                var price = list[i].price;
+	                                var quantity = list[i].quantity;
+	                                data = data.concat([{ id: id, itemName: itemName, price: price, quantity: quantity }]);
 	                        }
 	
-	                        this.setState({ data: newData });
+	                        me.setState({ data: data });
 	                        return;
 	                }).fail(function (err) {
 	                        console.log('failed');
@@ -22166,7 +22169,7 @@
 	        },
 	        startPolling: function startPolling() {
 	                var self = this;
-	                self._timer = setInterval(self.sync, 5000);
+	                self._timer = setInterval(self.sync, 15000);
 	        },
 	        render: function render() {
 	                var loggedIn = this.state.loggedIn;

@@ -35,6 +35,7 @@ var ShopBox = React.createClass({
         },
         handleSubmit: function (item, price, quantity) {
                 // var data = this.state.data;
+                var me = this;
                 
                 var itemPrice = price;
                 var itemQuantity = quantity;
@@ -54,7 +55,8 @@ var ShopBox = React.createClass({
                     data: data
                   })
                   .done(function(data) {
-                    console.log('successfully add to list');                    
+                    console.log('successfully add to list');    
+                    me.sync();
                     return;
                   })
                   .fail(function(err) {
@@ -104,29 +106,30 @@ var ShopBox = React.createClass({
                   });   
         },
         populateList: function (listId) {
-                var data = {"token": this.state.authToken};
+                var sendData = {"token": this.state.authToken}; 
+                var me = this;
 
                 $.ajax({
                     method: "POST",                     
                     url: 'http://localhost:3000/v1/list/' + listId,                                                                                                          
-                    data: data
+                    data: sendData
                   })
-                  .done(function(data) {
-                    console.log('successfully retrieved grocery list');                    
-                    console.log(data);
-                    if (data == '') {return};
-                    var list = JSON.parse(data);
-                    var newData = [];
+                  .done(function(dataGet) {
+                    console.log('successfully retrieved grocery list');                                        
+                    if (dataGet == '') {return};
+                    var list = JSON.parse(dataGet);
+                    console.log(list);
+                    var data = [];
 
                     for (var i = 0; i < list.length; i++) {
-                        var id = list.id;
-                        var itemName = list.name;
-                        var price = list.price;
-                        var quantity = list.quantity;
-                        newData = newData.concat([{id, itemName, price, quantity}]); 
-                    }
+                        var id = list[i].id;
+                        var itemName = list[i].name;
+                        var price = list[i].price;
+                        var quantity = list[i].quantity;
+                        data = data.concat([{id, itemName, price, quantity}]); 
+                    }                    
 
-                    this.setState({data : newData});
+                    me.setState({data});
                     return;
                   })
                   .fail(function(err) {
@@ -166,7 +169,7 @@ var ShopBox = React.createClass({
         },
         startPolling: function() {
                 var self = this;
-                self._timer = setInterval(self.sync , 5000);
+                self._timer = setInterval(self.sync , 15000);
         },                        
         render: function() {                
                 var loggedIn = this.state.loggedIn;
