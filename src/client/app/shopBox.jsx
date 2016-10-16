@@ -97,7 +97,7 @@ var ShopBox = React.createClass({
                   .done(function(data) {
                     console.log('successfully retrieved grocery list id');                    
                     console.log(data);    
-                    me.setState({groceryListId: data})                                    
+                    me.populateList(data);                    
                     return;
                   })
                   .fail(function(err) {
@@ -130,6 +130,7 @@ var ShopBox = React.createClass({
                     }                    
 
                     me.setState({data});
+                    me.setState({groceryListId: listId})                                    
                     return;
                   })
                   .fail(function(err) {

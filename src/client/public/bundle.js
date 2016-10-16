@@ -22101,7 +22101,7 @@
 	                }).done(function (data) {
 	                        console.log('successfully retrieved grocery list id');
 	                        console.log(data);
-	                        me.setState({ groceryListId: data });
+	                        me.populateList(data);
 	                        return;
 	                }).fail(function (err) {
 	                        console.log('failed');
@@ -22134,6 +22134,7 @@
 	                        }
 	
 	                        me.setState({ data: data });
+	                        me.setState({ groceryListId: listId });
 	                        return;
 	                }).fail(function (err) {
 	                        console.log('failed');
