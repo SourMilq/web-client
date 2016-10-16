@@ -22018,7 +22018,12 @@
 	                return {
 	                        loggedIn: false,
 	                        authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiZmlyc3ROYW1lIiwibGFzdF9uYW1lIjoibGFzdE5hbWUiLCJlbWFpbCI6InRlbXAtZW1haWxAZ21haWwuY29tIiwidXNlcm5hbWUiOiJ0ZXN0IiwicGFzc3dvcmQiOiJwYXNzIn0.77dKU0pq1xfA0zbV3ASl4QV-K43noKE7Gak8Ana2rhk",
-	                        data: [{ "id": "00001", "itemName": "Apple", "price": "1.00", "quantity": "2" }, { "id": "00002", "itemName": "Orange", "price": "1.00", "quantity": "2" }, { "id": "00003", "itemName": "Weiner", "price": "1.00", "quantity": "2" }]
+	                        data: []
+	                        // data: [
+	                        //         {"id":"00001","itemName":"Apple", "price":"1.00", "quantity":"2"},
+	                        //         {"id":"00002","itemName":"Orange", "price":"1.00", "quantity":"2"},
+	                        //         {"id":"00003","itemName":"Weiner", "price":"1.00", "quantity":"2"},
+	                        // ]
 	                };
 	        },
 	        generateId: function generateId() {
@@ -22065,7 +22070,7 @@
 	                        url: 'http://localhost:3000/v1/list/2',
 	                        data: data
 	                }).done(function (data) {
-	                        console.log('successfully registered');
+	                        console.log('successfully retrieved list');
 	                        var authData = JSON.parse(data);
 	                        console.log(authData);
 	                        return;
@@ -22082,23 +22087,31 @@
 	                        var length = data.length;
 	                        console.log(length);
 	
-	                        this.getList();
-	                        return _react2.default.createElement(
-	                                'div',
-	                                null,
-	                                _react2.default.createElement(_topBar2.default, null),
-	                                _react2.default.createElement(
+	                        if (length == 0) {
+	                                this.getList();
+	                                return _react2.default.createElement(
 	                                        'div',
-	                                        { className: 'well vert-offset-top-2' },
+	                                        null,
+	                                        ' Please Wait '
+	                                );
+	                        } else {
+	                                return _react2.default.createElement(
+	                                        'div',
+	                                        null,
+	                                        _react2.default.createElement(_topBar2.default, null),
 	                                        _react2.default.createElement(
-	                                                'h1',
-	                                                { className: 'vert-offset-top-0' },
-	                                                'Shopping List:'
-	                                        ),
-	                                        _react2.default.createElement(_shopList2.default, { data: data, removeNode: this.handleNodeRemoval, toggleComplete: this.handleToggleComplete }),
-	                                        _react2.default.createElement(_shopForm2.default, { onItemSubmit: this.handleSubmit })
-	                                )
-	                        );
+	                                                'div',
+	                                                { className: 'well vert-offset-top-2' },
+	                                                _react2.default.createElement(
+	                                                        'h1',
+	                                                        { className: 'vert-offset-top-0' },
+	                                                        'Shopping List:'
+	                                                ),
+	                                                _react2.default.createElement(_shopList2.default, { data: data, removeNode: this.handleNodeRemoval, toggleComplete: this.handleToggleComplete }),
+	                                                _react2.default.createElement(_shopForm2.default, { onItemSubmit: this.handleSubmit })
+	                                        )
+	                                );
+	                        }
 	                } else {
 	                        return _react2.default.createElement(_login2.default, { onLogin: this.handleLogin });
 	                }
