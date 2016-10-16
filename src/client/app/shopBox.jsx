@@ -8,15 +8,17 @@ import Login from './login.jsx'
 
 var ShopBox = React.createClass({
         getInitialState: function () {
+                console.log("init");                
+
                 return {
                         loggedIn : false,
-                        authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiZmlyc3ROYW1lIiwibGFzdF9uYW1lIjoibGFzdE5hbWUiLCJlbWFpbCI6InRlbXAtZW1haWxAZ21haWwuY29tIiwidXNlcm5hbWUiOiJ0ZXN0IiwicGFzc3dvcmQiOiJwYXNzIn0.77dKU0pq1xfA0zbV3ASl4QV-K43noKE7Gak8Ana2rhk",
-                        data: []
-                        // data: [
-                        //         {"id":"00001","itemName":"Apple", "price":"1.00", "quantity":"2"},
-                        //         {"id":"00002","itemName":"Orange", "price":"1.00", "quantity":"2"},
-                        //         {"id":"00003","itemName":"Weiner", "price":"1.00", "quantity":"2"},
-                        // ]
+                        authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiZmlyc3ROYW1lIiwibGFzdF9uYW1lIjoibGFzdE5hbWUiLCJlbWFpbCI6InRlbXAtZW1haWxAZ21haWwuY29tIiwidXNlcm5hbWUiOiJ0ZXN0IiwicGFzc3dvcmQiOiJwYXNzIn0.77dKU0pq1xfA0zbV3ASl4QV-K43noKE7Gak8Ana2rhk",                        
+                        groceryListId : -1,
+                        data: [
+                                {"id":"00001","itemName":"Apple", "price":"1.00", "quantity":"2"},
+                                {"id":"00002","itemName":"Orange", "price":"1.00", "quantity":"2"},
+                                {"id":"00003","itemName":"Weiner", "price":"1.00", "quantity":"2"},
+                        ]
                 };
         },
         generateId: function () {
@@ -55,18 +57,19 @@ var ShopBox = React.createClass({
                 this.setState({authToken: token})
                 this.setState({loggedIn: true})
         },
-        getList: function () {
+        getGroceryListId: function () {
                 var data = {"token": this.state.authToken};
+                var me = this;
 
                 $.ajax({
                     method: "POST",                     
-                    url: 'http://localhost:3000/v1/list/2',                                                                                                          
+                    url: 'http://localhost:3000/v1/lists',                                                                                                          
                     data: data
                   })
                   .done(function(data) {
-                    console.log('successfully retrieved list');
-                    var authData = JSON.parse(data);                    
-                    console.log(authData);                    
+                    console.log('successfully retrieved grocery list id');                    
+                    console.log(data);    
+                    me.setState({groceryListId: data})                                    
                     return;
                   })
                   .fail(function(err) {
@@ -74,22 +77,42 @@ var ShopBox = React.createClass({
                     return;
                   });   
         },
+        populateList: function (listId) {
+                var data = {"token": this.state.authToken,
+                            "id" : listId};
+
+                $.ajax({
+                    method: "POST",                     
+                    url: 'http://localhost:3000/v1/list/',                                                                                                          
+                    data: data
+                  })
+                  .done(function(data) {
+                    console.log('successfully retrieved grocery list');                    
+                    console.log(data);                                        
+                    return;
+                  })
+                  .fail(function(err) {
+                    console.log('failed');
+                    return;
+                  });  
+
+        },        
         render: function() {                
-                var loggedIn = this.state.loggedIn;                ;
+                var loggedIn = this.state.loggedIn;
 
                 if (loggedIn) {                                               
                         var data = this.state.data;                
                         var length = data.length;                        
-                        console.log(length);
-
-                        if (length == 0) {
-                                this.getList();
-                                return (
-                                        <div> Please Wait </div>
-                                        );
+                        console.log(this.state.authToken);
+                        var groceryListId = this.state.groceryListId;
+                        if (groceryListId == -1) {
+                                this.getGroceryListId();                                
                         }
                         else {
-                            return (        
+                                this.populateList(groceryListId);
+                        }
+                        
+                        return (        
                         <div>     
                                 <TopBar />
                                 <div className="well vert-offset-top-2">                                          
@@ -98,9 +121,7 @@ var ShopBox = React.createClass({
                                         <ShopForm onItemSubmit={this.handleSubmit} />                                                                                                                                             
                                 </div>
                         </div>
-                        );       
-                        }
-                     
+                        );                         
                 }     
                 else {
                         return (

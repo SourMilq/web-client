@@ -19,8 +19,8 @@ var Login = React.createClass({
 			    data: data
 			  })
 			  .done(function(data) {
-			    console.log('successfully registered');
-			    var authData = JSON.parse(data);
+			    console.log('successfully logged in');			    
+			    var authData = JSON.parse(data);			    
 			    var token = authData.token;
 			    console.log(token);
 			    me.props.onLogin(token);

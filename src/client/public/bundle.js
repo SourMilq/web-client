@@ -22015,15 +22015,13 @@
 	        displayName: 'ShopBox',
 	
 	        getInitialState: function getInitialState() {
+	                console.log("init");
+	
 	                return {
 	                        loggedIn: false,
 	                        authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiZmlyc3ROYW1lIiwibGFzdF9uYW1lIjoibGFzdE5hbWUiLCJlbWFpbCI6InRlbXAtZW1haWxAZ21haWwuY29tIiwidXNlcm5hbWUiOiJ0ZXN0IiwicGFzc3dvcmQiOiJwYXNzIn0.77dKU0pq1xfA0zbV3ASl4QV-K43noKE7Gak8Ana2rhk",
-	                        data: []
-	                        // data: [
-	                        //         {"id":"00001","itemName":"Apple", "price":"1.00", "quantity":"2"},
-	                        //         {"id":"00002","itemName":"Orange", "price":"1.00", "quantity":"2"},
-	                        //         {"id":"00003","itemName":"Weiner", "price":"1.00", "quantity":"2"},
-	                        // ]
+	                        groceryListId: -1,
+	                        data: [{ "id": "00001", "itemName": "Apple", "price": "1.00", "quantity": "2" }, { "id": "00002", "itemName": "Orange", "price": "1.00", "quantity": "2" }, { "id": "00003", "itemName": "Weiner", "price": "1.00", "quantity": "2" }]
 	                };
 	        },
 	        generateId: function generateId() {
@@ -22062,17 +22060,35 @@
 	                this.setState({ authToken: token });
 	                this.setState({ loggedIn: true });
 	        },
-	        getList: function getList() {
+	        getGroceryListId: function getGroceryListId() {
 	                var data = { "token": this.state.authToken };
+	                var me = this;
 	
 	                $.ajax({
 	                        method: "POST",
-	                        url: 'http://localhost:3000/v1/list/2',
+	                        url: 'http://localhost:3000/v1/lists',
 	                        data: data
 	                }).done(function (data) {
-	                        console.log('successfully retrieved list');
-	                        var authData = JSON.parse(data);
-	                        console.log(authData);
+	                        console.log('successfully retrieved grocery list id');
+	                        console.log(data);
+	                        me.setState({ groceryListId: data });
+	                        return;
+	                }).fail(function (err) {
+	                        console.log('failed');
+	                        return;
+	                });
+	        },
+	        populateList: function populateList(listId) {
+	                var data = { "token": this.state.authToken,
+	                        "id": listId };
+	
+	                $.ajax({
+	                        method: "POST",
+	                        url: 'http://localhost:3000/v1/list/',
+	                        data: data
+	                }).done(function (data) {
+	                        console.log('successfully retrieved grocery list');
+	                        console.log(data);
 	                        return;
 	                }).fail(function (err) {
 	                        console.log('failed');
@@ -22080,38 +22096,35 @@
 	                });
 	        },
 	        render: function render() {
-	                var loggedIn = this.state.loggedIn;;
+	                var loggedIn = this.state.loggedIn;
 	
 	                if (loggedIn) {
 	                        var data = this.state.data;
 	                        var length = data.length;
-	                        console.log(length);
-	
-	                        if (length == 0) {
-	                                this.getList();
-	                                return _react2.default.createElement(
-	                                        'div',
-	                                        null,
-	                                        ' Please Wait '
-	                                );
+	                        console.log(this.state.authToken);
+	                        var groceryListId = this.state.groceryListId;
+	                        if (groceryListId == -1) {
+	                                this.getGroceryListId();
 	                        } else {
-	                                return _react2.default.createElement(
-	                                        'div',
-	                                        null,
-	                                        _react2.default.createElement(_topBar2.default, null),
-	                                        _react2.default.createElement(
-	                                                'div',
-	                                                { className: 'well vert-offset-top-2' },
-	                                                _react2.default.createElement(
-	                                                        'h1',
-	                                                        { className: 'vert-offset-top-0' },
-	                                                        'Shopping List:'
-	                                                ),
-	                                                _react2.default.createElement(_shopList2.default, { data: data, removeNode: this.handleNodeRemoval, toggleComplete: this.handleToggleComplete }),
-	                                                _react2.default.createElement(_shopForm2.default, { onItemSubmit: this.handleSubmit })
-	                                        )
-	                                );
+	                                this.populateList(groceryListId);
 	                        }
+	
+	                        return _react2.default.createElement(
+	                                'div',
+	                                null,
+	                                _react2.default.createElement(_topBar2.default, null),
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'well vert-offset-top-2' },
+	                                        _react2.default.createElement(
+	                                                'h1',
+	                                                { className: 'vert-offset-top-0' },
+	                                                'Shopping List:'
+	                                        ),
+	                                        _react2.default.createElement(_shopList2.default, { data: data, removeNode: this.handleNodeRemoval, toggleComplete: this.handleToggleComplete }),
+	                                        _react2.default.createElement(_shopForm2.default, { onItemSubmit: this.handleSubmit })
+	                                )
+	                        );
 	                } else {
 	                        return _react2.default.createElement(_login2.default, { onLogin: this.handleLogin });
 	                }
@@ -29403,7 +29416,7 @@
 				url: 'http://localhost:3000/v1/user',
 				data: data
 			}).done(function (data) {
-				console.log('successfully registered');
+				console.log('successfully logged in');
 				var authData = JSON.parse(data);
 				var token = authData.token;
 				console.log(token);
