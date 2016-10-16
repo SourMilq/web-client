@@ -26,11 +26,50 @@ var ShopBox = React.createClass({
                 return Math.floor(Math.random()*90000) + 10000;
         },
         handleNodeRemoval: function (nodeId) {
-                var data = this.state.data;
-                data = data.filter(function (el) {
-                        return el.id !== nodeId;
-                });
-                this.setState({data});
+                // var data = this.state.data;
+                // data = data.filter(function (el) {
+                //         return el.id !== nodeId;
+                // });
+                // this.setState({data});
+
+                var me = this;
+
+                var itemId = nodeId;
+                var listId = this.state.groceryListId;
+
+                var data = {
+                       token : this.state.authToken 
+                };
+
+                $.ajax({
+                    method: "POST",                     
+                    url: 'http://localhost:3000/v1/list/' + listId + '/item/' + itemId,                                                                                                          
+                    data: data
+                  })
+                  .done(function(dataGet) {
+                    console.log('successfully delete from list');    
+
+                    if (dataGet == '') {return};
+                    var list = JSON.parse(dataGet);                    
+                    var data = [];
+
+                    for (var i = 0; i < list.length; i++) {
+                        var id = list[i].id;
+                        var itemName = list[i].name;
+                        var price = list[i].price;
+                        var quantity = list[i].quantity;
+                        data = data.concat([{id, itemName, price, quantity}]); 
+                    }                                          
+
+                    me.setState({data});
+                    me.setState({groceryListId: listId})                                                        
+                    return;
+                  })
+                  .fail(function(err) {
+                    console.log('failed');
+                    return;
+                  }); 
+
                 return;
         },
         handleSubmit: function (item, price, quantity) {
@@ -54,9 +93,25 @@ var ShopBox = React.createClass({
                     url: 'http://localhost:3000/v1/list/' + listId + '/item/add',                                                                                                          
                     data: data
                   })
-                  .done(function(data) {
+                  .done(function(dataGet) {
                     console.log('successfully add to list');    
-                    me.sync();
+
+                    if (dataGet == '') {return};
+                    var list = JSON.parse(dataGet);                    
+                    var data = [];
+
+
+
+                    for (var i = 0; i < list.length; i++) {
+                        var id = list[i].id;
+                        var itemName = list[i].name;
+                        var price = list[i].price;
+                        var quantity = list[i].quantity;
+                        data = data.concat([{id, itemName, price, quantity}]); 
+                    }                                          
+
+                    me.setState({data});
+                    me.setState({groceryListId: listId})                                                        
                     return;
                   })
                   .fail(function(err) {
@@ -96,7 +151,6 @@ var ShopBox = React.createClass({
                   })
                   .done(function(data) {
                     console.log('successfully retrieved grocery list id');                    
-                    console.log(data);    
                     me.populateList(data);                    
                     return;
                   })
@@ -118,7 +172,7 @@ var ShopBox = React.createClass({
                     console.log('successfully retrieved grocery list');                                        
                     if (dataGet == '') {return};
                     var list = JSON.parse(dataGet);
-                    console.log(list);
+
                     var data = [];
 
                     for (var i = 0; i < list.length; i++) {
@@ -177,8 +231,7 @@ var ShopBox = React.createClass({
 
                 if (loggedIn) {                                               
                         var data = this.state.data;                
-                        var length = data.length;                        
-                        console.log(this.state.authToken);    
+                        var length = data.length;                                                   
                                                              
                         return (        
                         <div>     

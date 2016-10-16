@@ -22033,11 +22033,50 @@
 	                return Math.floor(Math.random() * 90000) + 10000;
 	        },
 	        handleNodeRemoval: function handleNodeRemoval(nodeId) {
-	                var data = this.state.data;
-	                data = data.filter(function (el) {
-	                        return el.id !== nodeId;
+	                // var data = this.state.data;
+	                // data = data.filter(function (el) {
+	                //         return el.id !== nodeId;
+	                // });
+	                // this.setState({data});
+	
+	                var me = this;
+	
+	                var itemId = nodeId;
+	                var listId = this.state.groceryListId;
+	
+	                var data = {
+	                        token: this.state.authToken
+	                };
+	
+	                $.ajax({
+	                        method: "POST",
+	                        url: 'http://localhost:3000/v1/list/' + listId + '/item/' + itemId,
+	                        data: data
+	                }).done(function (dataGet) {
+	                        console.log('successfully delete from list');
+	
+	                        if (dataGet == '') {
+	                                return;
+	                        };
+	                        var list = JSON.parse(dataGet);
+	                        var data = [];
+	
+	                        for (var i = 0; i < list.length; i++) {
+	                                var id = list[i].id;
+	                                var itemName = list[i].name;
+	                                var price = list[i].price;
+	                                var quantity = list[i].quantity;
+	                                data = data.concat([{ id: id, itemName: itemName, price: price, quantity: quantity }]);
+	                        }
+	
+	                        me.setState({ data: data });
+	                        me.setState({ groceryListId: listId });
+	                        return;
+	                }).fail(function (err) {
+	                        console.log('failed');
+	                        return;
 	                });
-	                this.setState({ data: data });
+	
 	                return;
 	        },
 	        handleSubmit: function handleSubmit(item, price, quantity) {
@@ -22060,9 +22099,25 @@
 	                        method: "POST",
 	                        url: 'http://localhost:3000/v1/list/' + listId + '/item/add',
 	                        data: data
-	                }).done(function (data) {
+	                }).done(function (dataGet) {
 	                        console.log('successfully add to list');
-	                        me.sync();
+	
+	                        if (dataGet == '') {
+	                                return;
+	                        };
+	                        var list = JSON.parse(dataGet);
+	                        var data = [];
+	
+	                        for (var i = 0; i < list.length; i++) {
+	                                var id = list[i].id;
+	                                var itemName = list[i].name;
+	                                var price = list[i].price;
+	                                var quantity = list[i].quantity;
+	                                data = data.concat([{ id: id, itemName: itemName, price: price, quantity: quantity }]);
+	                        }
+	
+	                        me.setState({ data: data });
+	                        me.setState({ groceryListId: listId });
 	                        return;
 	                }).fail(function (err) {
 	                        console.log('failed');
@@ -22100,7 +22155,6 @@
 	                        data: data
 	                }).done(function (data) {
 	                        console.log('successfully retrieved grocery list id');
-	                        console.log(data);
 	                        me.populateList(data);
 	                        return;
 	                }).fail(function (err) {
@@ -22122,7 +22176,7 @@
 	                                return;
 	                        };
 	                        var list = JSON.parse(dataGet);
-	                        console.log(list);
+	
 	                        var data = [];
 	
 	                        for (var i = 0; i < list.length; i++) {
@@ -22178,7 +22232,6 @@
 	                if (loggedIn) {
 	                        var data = this.state.data;
 	                        var length = data.length;
-	                        console.log(this.state.authToken);
 	
 	                        return _react2.default.createElement(
 	                                'div',
