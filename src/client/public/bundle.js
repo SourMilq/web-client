@@ -21997,9 +21997,17 @@
 	
 	var _shopList2 = _interopRequireDefault(_shopList);
 	
-	var _shopForm = __webpack_require__(/*! ./shopForm.jsx */ 224);
+	var _shopForm = __webpack_require__(/*! ./shopForm.jsx */ 225);
 	
 	var _shopForm2 = _interopRequireDefault(_shopForm);
+	
+	var _topBar = __webpack_require__(/*! ./topBar.jsx */ 226);
+	
+	var _topBar2 = _interopRequireDefault(_topBar);
+	
+	var _login = __webpack_require__(/*! ./login.jsx */ 227);
+	
+	var _login2 = _interopRequireDefault(_login);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -22008,6 +22016,8 @@
 	
 	        getInitialState: function getInitialState() {
 	                return {
+	                        loggedIn: false,
+	                        authToke: "123",
 	                        data: [{ "id": "00001", "itemName": "Apple", "price": "1.00", "quantity": "2" }, { "id": "00002", "itemName": "Orange", "price": "1.00", "quantity": "2" }, { "id": "00003", "itemName": "Weiner", "price": "1.00", "quantity": "2" }]
 	                };
 	        },
@@ -22022,10 +22032,14 @@
 	                this.setState({ data: data });
 	                return;
 	        },
-	        handleSubmit: function handleSubmit(item) {
+	        handleSubmit: function handleSubmit(item, price, quantity) {
 	                var data = this.state.data;
 	                var id = this.generateId().toString();
-	                data = data.concat([{ id: id, item: item }]);
+	                var price = price;
+	                var quantity = quantity;
+	                var itemName = item;
+	
+	                data = data.concat([{ id: id, itemName: itemName, price: price, quantity: quantity }]);
 	                this.setState({ data: data });
 	        },
 	        handleToggleComplete: function handleToggleComplete(nodeId) {
@@ -22039,21 +22053,37 @@
 	                this.setState({ data: data });
 	                return;
 	        },
+	        handleLogin: function handleLogin(username, password) {
+	                console.log(username);
+	                console.log(password);
+	                this.setState({ loggedIn: true });
+	        },
 	        render: function render() {
-	                var data = this.state.data;
-	                var length = data.length;
-	                console.log(length);
-	                return _react2.default.createElement(
-	                        'div',
-	                        { className: 'well' },
-	                        _react2.default.createElement(
-	                                'h1',
-	                                { className: 'vert-offset-top-0' },
-	                                'Shopping List:'
-	                        ),
-	                        _react2.default.createElement(_shopList2.default, { data: data, removeNode: this.handleNodeRemoval, toggleComplete: this.handleToggleComplete }),
-	                        _react2.default.createElement(_shopForm2.default, { onItemSubmit: this.handleSubmit })
-	                );
+	                var loggedIn = this.state.loggedIn;;
+	
+	                if (loggedIn) {
+	                        var data = this.state.data;
+	                        var length = data.length;
+	                        console.log(length);
+	                        return _react2.default.createElement(
+	                                'div',
+	                                null,
+	                                _react2.default.createElement(_topBar2.default, null),
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'well vert-offset-top-2' },
+	                                        _react2.default.createElement(
+	                                                'h1',
+	                                                { className: 'vert-offset-top-0' },
+	                                                'Shopping List:'
+	                                        ),
+	                                        _react2.default.createElement(_shopList2.default, { data: data, removeNode: this.handleNodeRemoval, toggleComplete: this.handleToggleComplete }),
+	                                        _react2.default.createElement(_shopForm2.default, { onItemSubmit: this.handleSubmit })
+	                                )
+	                        );
+	                } else {
+	                        return _react2.default.createElement(_login2.default, { onLogin: this.handleLogin });
+	                }
 	        }
 	});
 	
@@ -29002,7 +29032,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _shopItem = __webpack_require__(/*! ./shopItem.jsx */ 225);
+	var _shopItem = __webpack_require__(/*! ./shopItem.jsx */ 224);
 	
 	var _shopItem2 = _interopRequireDefault(_shopItem);
 	
@@ -29035,84 +29065,6 @@
 
 /***/ },
 /* 224 */
-/*!*************************************!*\
-  !*** ./src/client/app/shopForm.jsx ***!
-  \*************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	        value: true
-	});
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var ShopForm = _react2.default.createClass({
-	        displayName: 'ShopForm',
-	
-	        doSubmit: function doSubmit(e) {
-	                e.preventDefault();
-	                var item = _reactDom2.default.findDOMNode(this.refs.item).value.trim();
-	                if (!item) {
-	                        return;
-	                }
-	                this.props.onItemSubmit(item);
-	                _reactDom2.default.findDOMNode(this.refs.item).value = '';
-	                return;
-	        },
-	        render: function render() {
-	                return _react2.default.createElement(
-	                        'div',
-	                        { className: 'commentForm vert-offset-top-2' },
-	                        _react2.default.createElement('hr', null),
-	                        _react2.default.createElement(
-	                                'div',
-	                                { className: 'clearfix' },
-	                                _react2.default.createElement(
-	                                        'form',
-	                                        { className: 'shopForm form-horizontal', onSubmit: this.doSubmit },
-	                                        _react2.default.createElement(
-	                                                'div',
-	                                                { className: 'form-group' },
-	                                                _react2.default.createElement(
-	                                                        'label',
-	                                                        { htmlFor: 'item', className: 'col-md-2 control-label' },
-	                                                        'Item'
-	                                                ),
-	                                                _react2.default.createElement(
-	                                                        'div',
-	                                                        { className: 'col-md-10' },
-	                                                        _react2.default.createElement('input', { type: 'text', id: 'item', ref: 'item', className: 'form-control', placeholder: 'Item Name' })
-	                                                )
-	                                        ),
-	                                        _react2.default.createElement(
-	                                                'div',
-	                                                { className: 'row' },
-	                                                _react2.default.createElement(
-	                                                        'div',
-	                                                        { className: 'col-md-10 col-md-offset-2 text-right' },
-	                                                        _react2.default.createElement('input', { type: 'submit', value: 'Save Item', className: 'btn btn-primary' })
-	                                                )
-	                                        )
-	                                )
-	                        )
-	                );
-	        }
-	});
-	
-	exports.default = ShopForm;
-
-/***/ },
-/* 225 */
 /*!*************************************!*\
   !*** ./src/client/app/shopItem.jsx ***!
   \*************************************/
@@ -29194,6 +29146,303 @@
 	});
 	
 	exports.default = ShopItem;
+
+/***/ },
+/* 225 */
+/*!*************************************!*\
+  !*** ./src/client/app/shopForm.jsx ***!
+  \*************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	        value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 34);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var ShopForm = _react2.default.createClass({
+	        displayName: 'ShopForm',
+	
+	        doSubmit: function doSubmit(e) {
+	                e.preventDefault();
+	                var item = _reactDom2.default.findDOMNode(this.refs.item).value.trim();
+	                if (!item) {
+	                        return;
+	                }
+	                var price = _reactDom2.default.findDOMNode(this.refs.price).value.trim();
+	                var quantity = _reactDom2.default.findDOMNode(this.refs.quantity).value.trim();
+	
+	                this.props.onItemSubmit(item, price, quantity);
+	                _reactDom2.default.findDOMNode(this.refs.item).value = '';
+	                _reactDom2.default.findDOMNode(this.refs.price).value = '';
+	                _reactDom2.default.findDOMNode(this.refs.quantity).value = '';
+	                return;
+	        },
+	        render: function render() {
+	                return _react2.default.createElement(
+	                        'div',
+	                        { className: 'commentForm' },
+	                        _react2.default.createElement(
+	                                'div',
+	                                { className: 'clearfix' },
+	                                _react2.default.createElement(
+	                                        'form',
+	                                        { className: 'shopForm form-horizontal', onSubmit: this.doSubmit },
+	                                        _react2.default.createElement(
+	                                                'div',
+	                                                { className: 'form-group' },
+	                                                _react2.default.createElement(
+	                                                        'label',
+	                                                        { htmlFor: 'item', className: 'col-md-2 control-label' },
+	                                                        'New'
+	                                                ),
+	                                                _react2.default.createElement(
+	                                                        'div',
+	                                                        { className: 'col-md-3' },
+	                                                        _react2.default.createElement('input', { type: 'text', id: 'item', ref: 'item', className: 'form-control', placeholder: 'Item Name' })
+	                                                ),
+	                                                _react2.default.createElement(
+	                                                        'div',
+	                                                        { className: 'col-md-3' },
+	                                                        _react2.default.createElement('input', { type: 'text', id: 'price', ref: 'price', className: 'form-control', placeholder: 'Price' })
+	                                                ),
+	                                                _react2.default.createElement(
+	                                                        'div',
+	                                                        { className: 'col-md-3' },
+	                                                        _react2.default.createElement('input', { type: 'text', id: 'quantity', ref: 'quantity', className: 'form-control', placeholder: 'Quantity' })
+	                                                )
+	                                        ),
+	                                        _react2.default.createElement(
+	                                                'div',
+	                                                { className: 'row' },
+	                                                _react2.default.createElement(
+	                                                        'div',
+	                                                        { className: 'col-md-10 col-md-offset-2 text-right' },
+	                                                        _react2.default.createElement('input', { type: 'submit', value: 'Save Item', className: 'btn btn-primary' })
+	                                                )
+	                                        )
+	                                )
+	                        )
+	                );
+	        }
+	});
+	
+	exports.default = ShopForm;
+
+/***/ },
+/* 226 */
+/*!***********************************!*\
+  !*** ./src/client/app/topBar.jsx ***!
+  \***********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	   value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 34);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var TopBar = _react2.default.createClass({
+	   displayName: 'TopBar',
+	
+	   render: function render() {
+	      return _react2.default.createElement(
+	         'div',
+	         { className: 'navbar navbar-inverse navbar-fixed-top' },
+	         _react2.default.createElement(
+	            'div',
+	            { className: 'container' },
+	            _react2.default.createElement(
+	               'div',
+	               { className: 'navbar-header' },
+	               _react2.default.createElement(
+	                  'button',
+	                  { type: 'button', className: 'navbar-toggle', 'data-toggle': 'collapse', 'data-target': '.navbar-collapse' },
+	                  _react2.default.createElement('span', { className: 'icon-bar' }),
+	                  _react2.default.createElement('span', { className: 'icon-bar' }),
+	                  _react2.default.createElement('span', { className: 'icon-bar' })
+	               ),
+	               _react2.default.createElement(
+	                  'a',
+	                  { className: 'navbar-brand hidden-xs', href: '#' },
+	                  ' SourMilq'
+	               )
+	            ),
+	            _react2.default.createElement(
+	               'div',
+	               { className: 'navbar-collapse collapse' },
+	               _react2.default.createElement(
+	                  'ul',
+	                  { className: 'nav navbar-nav navbar-right' },
+	                  _react2.default.createElement(
+	                     'li',
+	                     { className: 'active' },
+	                     _react2.default.createElement(
+	                        'a',
+	                        { href: '#' },
+	                        'Shopping List'
+	                     )
+	                  ),
+	                  _react2.default.createElement(
+	                     'li',
+	                     null,
+	                     _react2.default.createElement(
+	                        'a',
+	                        { href: '#about' },
+	                        'Fridge'
+	                     )
+	                  ),
+	                  _react2.default.createElement(
+	                     'li',
+	                     null,
+	                     _react2.default.createElement(
+	                        'a',
+	                        { href: '#contact' },
+	                        'Recipe'
+	                     )
+	                  )
+	               )
+	            )
+	         )
+	      );
+	   }
+	});
+	
+	exports.default = TopBar;
+
+/***/ },
+/* 227 */
+/*!**********************************!*\
+  !*** ./src/client/app/login.jsx ***!
+  \**********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 34);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var Login = _react2.default.createClass({
+		displayName: 'Login',
+	
+		doLogin: function doLogin(e) {
+			e.preventDefault();
+			var username = _reactDom2.default.findDOMNode(this.refs.username).value.trim();
+			var password = _reactDom2.default.findDOMNode(this.refs.password).value.trim();
+			this.props.onLogin(username, password);
+			return;
+		},
+		doCreateUser: function doCreateUser(e) {
+			e.preventDefault();
+	
+			var username = _reactDom2.default.findDOMNode(this.refs.username).value.trim();
+			var password = _reactDom2.default.findDOMNode(this.refs.password).value.trim();
+	
+			var data = {
+				first_name: "firstName",
+				last_name: "lastName",
+				email: "temp-email@gmail.com",
+				username: username,
+				password: password
+			};
+			console.log(data);
+			$.ajax({
+				method: "POST",
+				url: 'http://f3a5a098.ngrok.io/v1/user/create',
+				dataType: 'json',
+				headers: {
+					"Content-Type": "application/json"
+				},
+				data: data
+			}).done(function (data) {
+				console.log('successfully registered');
+				console.log(data);
+				return;
+			}).fail(function (err) {
+				console.log('failed to register');
+				return;
+			});
+		},
+		render: function render() {
+			return _react2.default.createElement(
+				'form',
+				{ className: 'login-form' },
+				_react2.default.createElement(
+					'div',
+					{ className: 'imgcontainer login-title' },
+					_react2.default.createElement('img', { src: './milq.jpg', className: 'imgavatar' }),
+					'Login Friend!'
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'login-container' },
+					_react2.default.createElement(
+						'label',
+						null,
+						_react2.default.createElement(
+							'b',
+							null,
+							'Username'
+						)
+					),
+					_react2.default.createElement('input', { type: 'text', id: 'username', ref: 'username', placeholder: 'Enter Username', className: 'login-input', required: true }),
+					_react2.default.createElement(
+						'label',
+						null,
+						_react2.default.createElement(
+							'b',
+							null,
+							'Password'
+						)
+					),
+					_react2.default.createElement('input', { type: 'password', id: 'password', ref: 'password', placeholder: 'Enter Password', className: 'login-input', required: true }),
+					_react2.default.createElement(
+						'button',
+						{ className: 'login-button', type: 'submit', onClick: this.doLogin },
+						'Login'
+					),
+					_react2.default.createElement(
+						'button',
+						{ className: 'login-button', type: 'submit', onClick: this.doCreateUser },
+						'Create User'
+					)
+				)
+			);
+		}
+	});
+	
+	exports.default = Login;
 
 /***/ }
 /******/ ]);

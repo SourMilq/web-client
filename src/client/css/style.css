@@ -1,5 +1,5 @@
-.vert-offset-top-0{
-    margin-top: 0em;
+.vert-offset-top-5{
+    margin-top: 3em;
 }
 .vert-offset-top-2{
     margin-top: 2em;
@@ -13,3 +13,95 @@
 .item-name-2{
     color: #337ab7;
 }
+
+.top-bar {
+	position: fixed;
+}
+
+@media(max-width:767px) {
+    .navbar .navbar-form {
+        width: 185px;
+        padding-left:0;
+        padding-right:0;
+    }
+}
+@media(min-width:768px) {
+    .navbar .navbar-form {
+        width: 250px;
+    }
+}
+
+.navbar .navbar-form {
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-right: 0;
+    margin-left: 0;
+    border: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+
+/* Bordered form */
+.login-form {
+	margin: auto;
+	width: 50%;
+    border: 3px solid #f1f1f1;
+}
+
+/* Full-width inputs */
+.login-input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Set a style for all buttons */
+.login-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* Add padding to containers */
+.login-container {
+    padding: 16px;
+}
+
+.login-span {
+	display: block;
+    float: none;
+}
+
+.login-cancelbtn {
+	width: 100%;
+	width: auto;
+    padding: 10px 18px;
+    background-color: #f44336;
+}
+
+/* Center the avatar image inside this container */
+.imgcontainer {
+	width: 40%;
+    margin: auto;
+    display: block;
+}
+
+/* Avatar image */
+.imgavatar {
+    width: 40%;
+    border-radius: 50%;
+}
+
+.login-title {
+	font-size: 150%;
+
+}
+
