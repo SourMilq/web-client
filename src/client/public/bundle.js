@@ -22021,7 +22021,8 @@
 	            loggedIn: false,
 	            authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiZmlyc3ROYW1lIiwibGFzdF9uYW1lIjoibGFzdE5hbWUiLCJlbWFpbCI6InRlbXAtZW1haWxAZ21haWwuY29tIiwidXNlcm5hbWUiOiJ0ZXN0IiwicGFzc3dvcmQiOiJwYXNzIn0.77dKU0pq1xfA0zbV3ASl4QV-K43noKE7Gak8Ana2rhk",
 	            groceryListId: -1,
-	            listType: 1,
+	            fridgeListId: -1,
+	            listType: 0,
 	            data: []
 	            // data: [ // Stub
 	            //         {"id":"00001","itemName":"Apple", "price":"1.00", "quantity":"2"},
@@ -22150,7 +22151,7 @@
 	        this.setState({ listType: listId });
 	        return;
 	    },
-	    getGroceryListId: function getGroceryListId() {
+	    getAllListId: function getAllListId() {
 	        var data = { "token": this.state.authToken };
 	        var me = this;
 	
@@ -22160,14 +22161,26 @@
 	            data: data
 	        }).done(function (data) {
 	            console.log('successfully retrieved grocery list id');
-	            me.populateList(data);
+	            var list = JSON.parse(data);
+	
+	            for (var i = 0; i < list.length; i++) {
+	                var name = list[i].name;
+	                var id = list[i].id;
+	                if (name == 'Grocery List') {
+	                    me.setState({ groceryListId: id });
+	                } else if (name == 'Fridge') {
+	                    me.setState({ fridgeListId: id });
+	                }
+	            }
+	            me.populateList();
 	            return;
 	        }).fail(function (err) {
 	            console.log('failed');
 	            return;
 	        });
 	    },
-	    populateList: function populateList(listId) {
+	    populateList: function populateList() {
+	        var listId = this.state.groceryListId;
 	        var sendData = { "token": this.state.authToken };
 	        var me = this;
 	
@@ -22193,20 +22206,25 @@
 	            }
 	
 	            me.setState({ data: data });
-	            me.setState({ groceryListId: listId });
 	            return;
 	        }).fail(function (err) {
 	            console.log('failed');
 	            return;
 	        });
 	    },
+	    getListName: function getListName(listId) {
+	        var names = ["Shopping List", "Fridge", "Recipe"];
+	        return names[listId];
+	    },
 	    sync: function sync() {
 	        var loggedIn = this.state.loggedIn;
 	
 	        if (loggedIn) {
+	            var listType = this.state.listType;
+	
 	            var groceryListId = this.state.groceryListId;
 	            if (groceryListId == -1) {
-	                this.getGroceryListId();
+	                this.getAllListId();
 	            } else {
 	                this.populateList(groceryListId);
 	            }
@@ -22229,7 +22247,7 @@
 	    },
 	    startPolling: function startPolling() {
 	        var self = this;
-	        self._timer = setInterval(self.sync, 1000);
+	        self._timer = setInterval(self.sync, 10000);
 	    },
 	    render: function render() {
 	        var loggedIn = this.state.loggedIn;
@@ -22240,63 +22258,25 @@
 	            var length = data.length;
 	
 	            var listType = this.state.listType;
+	            var listName = this.getListName(listType);
 	
-	            switch (listType) {
-	                case 0:
-	                    return _react2.default.createElement(
-	                        'div',
-	                        null,
-	                        _react2.default.createElement(_topBar2.default, { changeList: this.handleListChange }),
-	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'well vert-offset-top-2' },
-	                            _react2.default.createElement(
-	                                'h1',
-	                                { className: 'vert-offset-top-0' },
-	                                'Shopping List:'
-	                            ),
-	                            _react2.default.createElement(_shopList2.default, { data: data, removeNode: this.handleNodeRemoval, toggleComplete: this.handleToggleComplete }),
-	                            _react2.default.createElement(_shopForm2.default, { onItemSubmit: this.handleSubmit })
-	                        )
-	                    );
-	                    break;
-	                case 1:
-	                    return _react2.default.createElement(
-	                        'div',
-	                        null,
-	                        _react2.default.createElement(_topBar2.default, null),
-	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'well vert-offset-top-2' },
-	                            _react2.default.createElement(
-	                                'h1',
-	                                { className: 'vert-offset-top-0' },
-	                                'Fridge:'
-	                            ),
-	                            _react2.default.createElement(_shopList2.default, { data: data, removeNode: this.handleNodeRemoval, toggleComplete: this.handleToggleComplete }),
-	                            _react2.default.createElement(_shopForm2.default, { onItemSubmit: this.handleSubmit })
-	                        )
-	                    );
-	                    break;
-	                case 2:
-	                    return _react2.default.createElement(
-	                        'div',
-	                        null,
-	                        _react2.default.createElement(_topBar2.default, null),
-	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'well vert-offset-top-2' },
-	                            _react2.default.createElement(
-	                                'h1',
-	                                { className: 'vert-offset-top-0' },
-	                                'Recipe:'
-	                            ),
-	                            _react2.default.createElement(_shopList2.default, { data: data, removeNode: this.handleNodeRemoval, toggleComplete: this.handleToggleComplete }),
-	                            _react2.default.createElement(_shopForm2.default, { onItemSubmit: this.handleSubmit })
-	                        )
-	                    );
-	                    break;
-	            }
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(_topBar2.default, { changeList: this.handleListChange, curList: listType }),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'well vert-offset-top-2' },
+	                    _react2.default.createElement(
+	                        'h1',
+	                        { className: 'vert-offset-top-0' },
+	                        listName,
+	                        ':'
+	                    ),
+	                    _react2.default.createElement(_shopList2.default, { data: data, removeNode: this.handleNodeRemoval, toggleComplete: this.handleToggleComplete }),
+	                    _react2.default.createElement(_shopForm2.default, { onItemSubmit: this.handleSubmit })
+	                )
+	            );
 	        } else {
 	            return _react2.default.createElement(_login2.default, { onLogin: this.handleLogin });
 	        }
@@ -29481,6 +29461,24 @@
 	var TopBar = _react2.default.createClass({
 	   displayName: 'TopBar',
 	
+	   changeList0: function changeList0(e) {
+	      e.preventDefault();
+	      console.log("0");
+	      this.props.changeList(0);
+	      return;
+	   },
+	   changeList1: function changeList1(e) {
+	      e.preventDefault();
+	      console.log("1");
+	      this.props.changeList(1);
+	      return;
+	   },
+	   changeList2: function changeList2(e) {
+	      e.preventDefault();
+	      console.log("2");
+	      this.props.changeList(2);
+	      return;
+	   },
 	   render: function render() {
 	      return _react2.default.createElement(
 	         'div',
@@ -29512,7 +29510,7 @@
 	                  { className: 'nav navbar-nav navbar-right' },
 	                  _react2.default.createElement(
 	                     'li',
-	                     { className: 'active' },
+	                     { className: this.props.curList == 0 ? 'active' : '', onClick: this.changeList0 },
 	                     _react2.default.createElement(
 	                        'a',
 	                        { href: '#' },
@@ -29521,19 +29519,19 @@
 	                  ),
 	                  _react2.default.createElement(
 	                     'li',
-	                     null,
+	                     { className: this.props.curList == 1 ? 'active' : '', onClick: this.changeList1 },
 	                     _react2.default.createElement(
 	                        'a',
-	                        { href: '#about' },
+	                        { href: '#' },
 	                        'Fridge'
 	                     )
 	                  ),
 	                  _react2.default.createElement(
 	                     'li',
-	                     null,
+	                     { className: this.props.curList == 2 ? 'active' : '', onClick: this.changeList2 },
 	                     _react2.default.createElement(
 	                        'a',
-	                        { href: '#contact' },
+	                        { href: '#' },
 	                        'Recipe'
 	                     )
 	                  )

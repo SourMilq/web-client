@@ -14,7 +14,8 @@ var ShopBox = React.createClass({
             loggedIn : false,
             authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiZmlyc3ROYW1lIiwibGFzdF9uYW1lIjoibGFzdE5hbWUiLCJlbWFpbCI6InRlbXAtZW1haWxAZ21haWwuY29tIiwidXNlcm5hbWUiOiJ0ZXN0IiwicGFzc3dvcmQiOiJwYXNzIn0.77dKU0pq1xfA0zbV3ASl4QV-K43noKE7Gak8Ana2rhk",                        
             groceryListId : -1,   
-            listType : 1,
+            fridgeListId : -1,   
+            listType : 0,
             data : []                     
             // data: [ // Stub
             //         {"id":"00001","itemName":"Apple", "price":"1.00", "quantity":"2"},
@@ -83,10 +84,10 @@ var ShopBox = React.createClass({
         var listId = this.state.groceryListId;
 
         var data = {                        
-                name : itemName,
-                quantity : itemQuantity,
-                price : itemPrice,
-                token : this.state.authToken
+            name : itemName,
+            quantity : itemQuantity,
+            price : itemPrice,
+            token : this.state.authToken
         }
 
         $.ajax({
@@ -145,7 +146,7 @@ var ShopBox = React.createClass({
         this.setState({listType: listId})
         return;
     },
-    getGroceryListId: function () {
+    getAllListId: function () {
         var data = {"token": this.state.authToken};
         var me = this;
 
@@ -155,8 +156,20 @@ var ShopBox = React.createClass({
             data: data
           })
           .done(function(data) {
-            console.log('successfully retrieved grocery list id');                    
-            me.populateList(data);                    
+            console.log('successfully retrieved grocery list id');   
+            var list = JSON.parse(data);
+
+            for (var i = 0; i < list.length; i++) {
+                var name = list[i].name;
+                var id = list[i].id;
+                if (name == 'Grocery List') {
+                    me.setState({groceryListId: id})
+                }
+                else if (name == 'Fridge') {
+                    me.setState({fridgeListId: id})
+                }
+            }              
+            me.populateList();                                
             return;
           })
           .fail(function(err) {
@@ -164,7 +177,8 @@ var ShopBox = React.createClass({
             return;
           });   
     },
-    populateList: function (listId) {
+    populateList: function () {
+        var listId = this.state.groceryListId;
         var sendData = {"token": this.state.authToken}; 
         var me = this;
 
@@ -188,8 +202,7 @@ var ShopBox = React.createClass({
                 data = data.concat([{id, itemName, price, quantity}]); 
             }                    
 
-            me.setState({data});
-            me.setState({groceryListId: listId})
+            me.setState({data});            
             return;
           })
           .fail(function(err) {
@@ -197,20 +210,26 @@ var ShopBox = React.createClass({
             return;
           });
     },
+    getListName: function (listId) {
+        var names = ["Shopping List", "Fridge", "Recipe"];
+        return names[listId];
+    },
     sync: function () {
         var loggedIn = this.state.loggedIn;
 
         if (loggedIn) {  
-                var groceryListId = this.state.groceryListId;
-                if (groceryListId == -1) {
-                        this.getGroceryListId();
-                }
-                else {
-                        this.populateList(groceryListId);
-                }
+            var listType = this.state.listType;
+
+            var groceryListId = this.state.groceryListId;
+            if (groceryListId == -1) {
+                    this.getAllListId();
+            }
+            else {
+                    this.populateList(groceryListId);
+            }
         }       
         else {
-                console.log("not logged in");
+            console.log("not logged in");
         }         
 
         return;
@@ -228,56 +247,29 @@ var ShopBox = React.createClass({
     },
     startPolling: function() {
         var self = this;
-        self._timer = setInterval(self.sync , 1000);
+        self._timer = setInterval(self.sync , 10000);
     },                        
     render: function() {                
         var loggedIn = this.state.loggedIn;
 
         // if (true) { // Stub
         if (loggedIn) {                                               
-                var data = this.state.data;                
-                var length = data.length;      
+            var data = this.state.data;                
+            var length = data.length;
 
-                var listType = this.state.listType;
-                                                   
-                switch(listType) {
-                    case 0:
-                        return (        
-                            <div>     
-                                <TopBar changeList={this.handleListChange}/>
-                                <div className="well vert-offset-top-2">                                          
-                                    <h1 className="vert-offset-top-0">Shopping List:</h1>
-                                    <ShopList data={data} removeNode={this.handleNodeRemoval} toggleComplete={this.handleToggleComplete} />
-                                    <ShopForm onItemSubmit={this.handleSubmit} />                                                                                                                                             
-                                </div>
-                            </div>
-                        );    
-                        break;
-                    case 1:
-                        return (        
-                            <div>     
-                                <TopBar />
-                                <div className="well vert-offset-top-2">                                          
-                                    <h1 className="vert-offset-top-0">Fridge:</h1>
-                                    <ShopList data={data} removeNode={this.handleNodeRemoval} toggleComplete={this.handleToggleComplete} />
-                                    <ShopForm onItemSubmit={this.handleSubmit} />                                                                                                                                             
-                                </div>
-                            </div>
-                        ); 
-                        break;
-                    case 2:
-                        return (        
-                                <div>     
-                                    <TopBar />
-                                    <div className="well vert-offset-top-2">                                          
-                                        <h1 className="vert-offset-top-0">Recipe:</h1>
-                                        <ShopList data={data} removeNode={this.handleNodeRemoval} toggleComplete={this.handleToggleComplete} />
-                                        <ShopForm onItemSubmit={this.handleSubmit} />                                                                                                                                             
-                                    </div>
-                                </div>
-                            ); 
-                        break;
-                }
+            var listType = this.state.listType;
+            var listName = this.getListName(listType);
+                      
+            return (        
+                <div>     
+                    <TopBar changeList={this.handleListChange} curList={listType}/>
+                    <div className="well vert-offset-top-2">                                          
+                        <h1 className="vert-offset-top-0">{listName}:</h1>
+                        <ShopList data={data} removeNode={this.handleNodeRemoval} toggleComplete={this.handleToggleComplete} />
+                        <ShopForm onItemSubmit={this.handleSubmit} />                                                                                                                                             
+                    </div>
+                </div>
+            );
         }
         else {
             return (
