@@ -12,9 +12,9 @@ var ShopList = React.createClass({
         },
         render: function() {
                 var listNodes = this.props.data.map(function (listItem) {
-                        return (
-                                <ShopItem key={listItem.id} nodeId={listItem.id}  itemName={listItem.itemName} price={listItem.price} quantity={listItem.quantity} removeNode={this.removeNode} toggleComplete={this.toggleComplete} />
-                        );
+                return (
+                        <ShopItem key={listItem.id} nodeId={listItem.id}  itemName={listItem.itemName} price={listItem.price} quantity={listItem.quantity} removeNode={this.removeNode} toggleComplete={this.toggleComplete} />
+                );
                 },this);
                 return (
                         <ul className="list-group">

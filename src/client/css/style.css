@@ -88,10 +88,11 @@
 }
 
 /* Center the avatar image inside this container */
-.imgcontainer {
-	width: 40%;
-    margin: auto;
+.imgcontainer {	
     display: block;
+    margin: auto;    
+    text-align:center;
+    width: 50%;
 }
 
 /* Avatar image */
@@ -101,7 +102,10 @@
 }
 
 .login-title {
-	font-size: 150%;
-
+    margin-top: 15px;
+    color: #006600;
+    font-family: arial;
+	font-size: 200%;
+    text-align: center;
 }
 

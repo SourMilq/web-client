@@ -67,15 +67,18 @@ var Login = React.createClass({
         render: function() {                              
                 return (
                         <form className="login-form">	
-                        <div className="imgcontainer login-title">
-						    <img src="./milq.jpg" className="imgavatar"/>
-						    Login Friend!
+                          <div className="imgcontainer">
+						    <img src="./milq.jpg"/>						    
 						  </div>					  
+
+						  <div className="login-title">
+						  	Login Friend!
+						  </div>
 
 						  <div className="login-container">
 						    <label><b>Username</b></label>
 						    <input type="text" id="username" ref="username" placeholder="Enter Username" className="login-input" required />
-
+						    
 						    <label><b>Password</b></label>
 						    <input type="password" id="password" ref="password" placeholder="Enter Password" className="login-input" required />
 
