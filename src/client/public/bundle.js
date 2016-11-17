@@ -22297,6 +22297,9 @@
 	            var list = JSON.parse(dataGet);
 	
 	            var data = [];
+	            var expired = 'Following Milq has gone sour:\n';
+	            var hasExpires = false;
+	            var n = new Date();
 	
 	            for (var i = 0; i < list.length; i++) {
 	                var id = list[i].id;
@@ -22305,7 +22308,18 @@
 	                var quantity = list[i].quantity;
 	                var expiration = list[i].expiration;
 	                data = data.concat([{ id: id, itemName: itemName, price: price, quantity: quantity, expiration: expiration }]);
+	
+	                var d = new Date(expiration);
+	
+	                if (n > d) {
+	                    hasExpires = true;
+	                    expired += itemName + ' expired on: ' + expiration + '\n';
+	                };
 	            }
+	
+	            if (hasExpires) {
+	                alert(expired);
+	            };
 	
 	            me.setState({ data: data });
 	            return;

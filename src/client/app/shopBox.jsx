@@ -191,7 +191,7 @@ var ShopBox = React.createClass({
 
         return;
     },
-    handleLogin: function (token) {
+    handleLogin: function (token) {                
         this.setState({authToken: token})
         this.setState({loggedIn: true})
         this.sync();
@@ -294,15 +294,29 @@ var ShopBox = React.createClass({
             var list = JSON.parse(dataGet);
 
             var data = [];
+            var expired = 'Following Milq has gone sour:\n';
+            var hasExpires = false;
+            var n = new Date();            
 
             for (var i = 0; i < list.length; i++) {
                 var id = list[i].id;
                 var itemName = list[i].name;
                 var price = list[i].price;
                 var quantity = list[i].quantity;
-                var expiration = list[i].expiration;
+                var expiration = list[i].expiration;                
                 data = data.concat([{id, itemName, price, quantity, expiration}]); 
+
+                var d = new Date(expiration);
+                
+                if (n>d) {
+                    hasExpires = true;
+                    expired += itemName + ' expired on: ' + expiration + '\n';
+                };
             }                    
+
+            if (hasExpires) {
+                alert(expired);    
+            };
 
             me.setState({data});            
             return;

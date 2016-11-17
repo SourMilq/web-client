@@ -19,7 +19,7 @@ var Login = React.createClass({
 			    data: data
 			  })
 			  .done(function(data) {
-			    console.log('successfully logged in');			    
+			    console.log('successfully logged in');
 			    var authData = JSON.parse(data);			    
 			    var token = authData.token;
 			    console.log(token);
@@ -78,7 +78,7 @@ var Login = React.createClass({
 						  <div className="login-container">
 						    <label><b>Username</b></label>
 						    <input type="text" id="username" ref="username" placeholder="Enter Username" className="login-input" required />
-						    
+
 						    <label><b>Password</b></label>
 						    <input type="password" id="password" ref="password" placeholder="Enter Password" className="login-input" required />
 
