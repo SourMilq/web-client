@@ -10,10 +10,14 @@ var ShopList = React.createClass({
                 this.props.toggleComplete(nodeId);
                 return;
         },
-        render: function() {
+        changeExpiration: function (nodeId, expiration) {
+                this.props.changeExpiration(nodeId, expiration);
+                return;
+        },
+        render: function() {                
                 var listNodes = this.props.data.map(function (listItem) {
                 return (
-                        <ShopItem key={listItem.id} nodeId={listItem.id} itemName={listItem.itemName} price={listItem.price} quantity={listItem.quantity} removeNode={this.removeNode} toggleComplete={this.toggleComplete} />
+                        <ShopItem key={listItem.id} nodeId={listItem.id} itemName={listItem.itemName} price={listItem.price} quantity={listItem.quantity} expiration={listItem.expiration} removeNode={this.removeNode} toggleComplete={this.toggleComplete} changeExpiration={this.changeExpiration} cl={this.props.curList}/>
                 );
                 },this);
                 return (

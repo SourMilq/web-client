@@ -22034,6 +22034,20 @@
 	    generateId: function generateId() {
 	        return Math.floor(Math.random() * 90000) + 10000;
 	    },
+	    getListId: function getListId(listType) {
+	        var listType = this.state.listType;
+	        var listId;
+	        switch (listType) {
+	            case 0:
+	                listId = this.state.groceryListId;
+	                break;
+	            case 1:
+	                listId = this.state.fridgeListId;
+	                break;
+	        }
+	
+	        return listId;
+	    },
 	    handleNodeRemoval: function handleNodeRemoval(nodeId) {
 	        // var data = this.state.data;
 	        // data = data.filter(function (el) {
@@ -22044,7 +22058,7 @@
 	        var me = this;
 	
 	        var itemId = nodeId;
-	        var listId = this.state.groceryListId;
+	        var listId = this.getListId();
 	
 	        var data = {
 	            token: this.state.authToken
@@ -22068,11 +22082,11 @@
 	                var itemName = list[i].name;
 	                var price = list[i].price;
 	                var quantity = list[i].quantity;
-	                data = data.concat([{ id: id, itemName: itemName, price: price, quantity: quantity }]);
+	                var expiration = list[i].expiration;
+	                data = data.concat([{ id: id, itemName: itemName, price: price, quantity: quantity, expiration: expiration }]);
 	            }
 	
 	            me.setState({ data: data });
-	            me.setState({ groceryListId: listId });
 	            return;
 	        }).fail(function (err) {
 	            console.log('failed');
@@ -22081,19 +22095,21 @@
 	
 	        return;
 	    },
-	    handleSubmit: function handleSubmit(item, price, quantity) {
+	    handleSubmit: function handleSubmit(item, price, quantity, expiration) {
 	        // var data = this.state.data;
 	        var me = this;
 	
 	        var itemPrice = price;
 	        var itemQuantity = quantity;
 	        var itemName = item;
-	        var listId = this.state.groceryListId;
+	        var listId = this.getListId();
+	        var itemExpiration = expiration;
 	
 	        var data = {
 	            name: itemName,
 	            quantity: itemQuantity,
 	            price: itemPrice,
+	            expiration: itemExpiration,
 	            token: this.state.authToken
 	        };
 	
@@ -22115,11 +22131,11 @@
 	                var itemName = list[i].name;
 	                var price = list[i].price;
 	                var quantity = list[i].quantity;
-	                data = data.concat([{ id: id, itemName: itemName, price: price, quantity: quantity }]);
+	                var expiration = list[i].expiration;
+	                data = data.concat([{ id: id, itemName: itemName, price: price, quantity: quantity, expiration: expiration }]);
 	            }
 	
 	            me.setState({ data: data });
-	            me.setState({ groceryListId: listId });
 	            return;
 	        }).fail(function (err) {
 	            console.log('failed');
@@ -22131,14 +22147,53 @@
 	        return;
 	    },
 	    handleToggleComplete: function handleToggleComplete(nodeId) {
-	        var data = this.state.data;
-	        for (var i in data) {
-	            if (data[i].id == nodeId) {
-	                data[i].complete = data[i].complete === 'true' ? 'false' : 'true';
-	                break;
+	        // var data = this.state.data;
+	        // for (var i in data) {
+	        //         if (data[i].id == nodeId) {
+	        //                 data[i].complete = data[i].complete === 'true' ? 'false' : 'true';
+	        //                 break;
+	        //         }
+	        // }
+	        // this.setState({data});
+	
+	        var me = this;
+	
+	        var itemId = nodeId;
+	        var listId = this.getListId();
+	
+	        var data = {
+	            token: this.state.authToken
+	        };
+	
+	        $.ajax({
+	            method: "POST",
+	            url: 'http://localhost:3000/v1/list/' + listId + '/item/' + itemId + '/done',
+	            data: data
+	        }).done(function (dataGet) {
+	            console.log('successfully done from list');
+	
+	            if (dataGet == '') {
+	                return;
+	            };
+	            var list = JSON.parse(dataGet);
+	            var data = [];
+	
+	            for (var i = 0; i < list.length; i++) {
+	                var id = list[i].id;
+	                var itemName = list[i].name;
+	                var price = list[i].price;
+	                var quantity = list[i].quantity;
+	                var expiration = list[i].expiration;
+	                data = data.concat([{ id: id, itemName: itemName, price: price, quantity: quantity, expiration: expiration }]);
 	            }
-	        }
-	        this.setState({ data: data });
+	
+	            me.setState({ data: data });
+	            return;
+	        }).fail(function (err) {
+	            console.log('failed');
+	            return;
+	        });
+	
 	        return;
 	    },
 	    handleLogin: function handleLogin(token) {
@@ -22149,6 +22204,49 @@
 	    },
 	    handleListChange: function handleListChange(listId) {
 	        this.setState({ listType: listId });
+	        this.sync(listId);
+	        return;
+	    },
+	    handleExpirationChange: function handleExpirationChange(nodeId, newExpiration) {
+	        var me = this;
+	
+	        var itemId = nodeId;
+	        var listId = this.getListId();
+	
+	        var data = {
+	            expiration: newExpiration,
+	            token: this.state.authToken
+	        };
+	
+	        $.ajax({
+	            method: "POST",
+	            url: 'http://localhost:3000/v1/list/' + listId + '/item/' + itemId + '/update',
+	            data: data
+	        }).done(function (dataGet) {
+	            console.log('successfully done from list');
+	
+	            if (dataGet == '') {
+	                return;
+	            };
+	            var list = JSON.parse(dataGet);
+	            var data = [];
+	
+	            for (var i = 0; i < list.length; i++) {
+	                var id = list[i].id;
+	                var itemName = list[i].name;
+	                var price = list[i].price;
+	                var quantity = list[i].quantity;
+	                var expiration = list[i].expiration;
+	                data = data.concat([{ id: id, itemName: itemName, price: price, quantity: quantity, expiration: expiration }]);
+	            }
+	
+	            me.setState({ data: data });
+	            return;
+	        }).fail(function (err) {
+	            console.log('failed');
+	            return;
+	        });
+	
 	        return;
 	    },
 	    getAllListId: function getAllListId() {
@@ -22160,27 +22258,30 @@
 	            url: 'http://localhost:3000/v1/lists',
 	            data: data
 	        }).done(function (data) {
-	            console.log('successfully retrieved grocery list id');
+	            console.log('successfully retrieved list id');
+	
 	            var list = JSON.parse(data);
+	            var lid;
 	
 	            for (var i = 0; i < list.length; i++) {
 	                var name = list[i].name;
 	                var id = list[i].id;
 	                if (name == 'Grocery List') {
 	                    me.setState({ groceryListId: id });
+	                    lid = id;
 	                } else if (name == 'Fridge') {
 	                    me.setState({ fridgeListId: id });
+	                    lid = id;
 	                }
 	            }
-	            me.populateList();
+	            me.populateList(lid);
 	            return;
 	        }).fail(function (err) {
 	            console.log('failed');
 	            return;
 	        });
 	    },
-	    populateList: function populateList() {
-	        var listId = this.state.groceryListId;
+	    populateList: function populateList(listId) {
 	        var sendData = { "token": this.state.authToken };
 	        var me = this;
 	
@@ -22189,7 +22290,7 @@
 	            url: 'http://localhost:3000/v1/list/' + listId,
 	            data: sendData
 	        }).done(function (dataGet) {
-	            console.log('successfully retrieved grocery list');
+	            console.log('successfully retrieved list ' + listId);
 	            if (dataGet == '') {
 	                return;
 	            };
@@ -22202,7 +22303,8 @@
 	                var itemName = list[i].name;
 	                var price = list[i].price;
 	                var quantity = list[i].quantity;
-	                data = data.concat([{ id: id, itemName: itemName, price: price, quantity: quantity }]);
+	                var expiration = list[i].expiration;
+	                data = data.concat([{ id: id, itemName: itemName, price: price, quantity: quantity, expiration: expiration }]);
 	            }
 	
 	            me.setState({ data: data });
@@ -22216,17 +22318,34 @@
 	        var names = ["Shopping List", "Fridge", "Recipe"];
 	        return names[listId];
 	    },
-	    sync: function sync() {
+	    sync: function sync(listType) {
 	        var loggedIn = this.state.loggedIn;
+	        console.log("sycing");
 	
 	        if (loggedIn) {
-	            var listType = this.state.listType;
+	            if (listType == null) {
+	                listType = this.state.listType;
+	            }
 	
-	            var groceryListId = this.state.groceryListId;
-	            if (groceryListId == -1) {
-	                this.getAllListId();
-	            } else {
-	                this.populateList(groceryListId);
+	            switch (listType) {
+	                case 0:
+	                    var groceryListId = this.state.groceryListId;
+	                    if (groceryListId == -1) {
+	                        this.getAllListId();
+	                    } else {
+	                        this.populateList(groceryListId);
+	                    }
+	                    break;
+	                case 1:
+	                    var fridgeListId = this.state.fridgeListId;
+	                    if (fridgeListId == -1) {
+	                        this.getAllListId();
+	                    } else {
+	                        this.populateList(fridgeListId);
+	                    }
+	                    break;
+	                case 2:
+	                    break;
 	            }
 	        } else {
 	            console.log("not logged in");
@@ -22273,7 +22392,7 @@
 	                        listName,
 	                        ':'
 	                    ),
-	                    _react2.default.createElement(_shopList2.default, { data: data, removeNode: this.handleNodeRemoval, toggleComplete: this.handleToggleComplete }),
+	                    _react2.default.createElement(_shopList2.default, { data: data, removeNode: this.handleNodeRemoval, toggleComplete: this.handleToggleComplete, changeExpiration: this.handleExpirationChange, curList: listType }),
 	                    _react2.default.createElement(_shopForm2.default, { onItemSubmit: this.handleSubmit })
 	                )
 	            );
@@ -29245,9 +29364,13 @@
 	                this.props.toggleComplete(nodeId);
 	                return;
 	        },
+	        changeExpiration: function changeExpiration(nodeId, expiration) {
+	                this.props.changeExpiration(nodeId, expiration);
+	                return;
+	        },
 	        render: function render() {
 	                var listNodes = this.props.data.map(function (listItem) {
-	                        return _react2.default.createElement(_shopItem2.default, { key: listItem.id, nodeId: listItem.id, itemName: listItem.itemName, price: listItem.price, quantity: listItem.quantity, removeNode: this.removeNode, toggleComplete: this.toggleComplete });
+	                        return _react2.default.createElement(_shopItem2.default, { key: listItem.id, nodeId: listItem.id, itemName: listItem.itemName, price: listItem.price, quantity: listItem.quantity, expiration: listItem.expiration, removeNode: this.removeNode, toggleComplete: this.toggleComplete, changeExpiration: this.changeExpiration, cl: this.props.curList });
 	                }, this);
 	                return _react2.default.createElement(
 	                        'ul',
@@ -29276,6 +29399,10 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _reactDom = __webpack_require__(/*! react-dom */ 34);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var ShopItem = _react2.default.createClass({
@@ -29288,13 +29415,18 @@
 	        },
 	        toggleComplete: function toggleComplete(e) {
 	                e.preventDefault();
-	                this.props.removeNode(this.props.nodeId);
+	                this.props.toggleComplete(this.props.nodeId);
 	                return;
 	        },
-	        updateClass: function updateClass() {},
+	        updateClass: function updateClass(e) {
+	                e.preventDefault();
+	                var curDate = _reactDom2.default.findDOMNode(this.refs.curDate).value.trim();
+	                console.log(curDate);
+	                this.props.changeExpiration(this.props.nodeId, curDate);
+	                return;
+	        },
 	        render: function render() {
 	                var classes = 'list-group-item clearfix';
-	
 	                return _react2.default.createElement(
 	                        'li',
 	                        { className: classes },
@@ -29317,23 +29449,28 @@
 	                                ),
 	                                _react2.default.createElement(
 	                                        'div',
-	                                        { className: 'item-name-2 col-xs-3 col-xl-3 col-md-3 pull-center' },
+	                                        { className: 'item-name-2 col-xs-2 col-xl-2 col-md-2 pull-center' },
 	                                        ' ',
 	                                        this.props.quantity,
 	                                        ' '
 	                                ),
 	                                _react2.default.createElement(
 	                                        'div',
-	                                        { className: 'item-name-3 col-xs-3 col-xl-3 col-md-3 pull-right', role: 'group' },
-	                                        _react2.default.createElement(
-	                                                'button',
-	                                                { type: 'button', className: 'btn btn-xs btn-success img-circle pull-right', onClick: this.toggleComplete },
-	                                                '\u2713'
-	                                        ),
+	                                        { className: "item-name-2 col-xs-2 col-xl-2 col-md-2 pull-center " + (this.props.cl == 1 ? 'show' : 'hidden') },
+	                                        _react2.default.createElement('input', { type: 'date', ref: 'curDate', id: 'curDate', defaultValue: this.props.expiration, onChange: this.updateClass })
+	                                ),
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'item-name-3 col-xs-2 col-xl-2 col-md-2 pull-right', role: 'group' },
 	                                        _react2.default.createElement(
 	                                                'button',
 	                                                { type: 'button', className: 'btn btn-xs btn-danger img-circle pull-right', onClick: this.removeNode },
 	                                                '\uFF38'
+	                                        ),
+	                                        _react2.default.createElement(
+	                                                'button',
+	                                                { type: 'button', className: "btn btn-xs btn-success img-circle pull-right btnCheck " + (this.props.cl == 0 ? 'show' : 'hidden'), onClick: this.toggleComplete },
+	                                                '\u2713'
 	                                        )
 	                                )
 	                        )
@@ -29377,11 +29514,13 @@
 	                }
 	                var price = _reactDom2.default.findDOMNode(this.refs.price).value.trim();
 	                var quantity = _reactDom2.default.findDOMNode(this.refs.quantity).value.trim();
+	                var expiration = _reactDom2.default.findDOMNode(this.refs.expiration).value.trim();
 	
-	                this.props.onItemSubmit(item, price, quantity);
+	                this.props.onItemSubmit(item, price, quantity, expiration);
 	                _reactDom2.default.findDOMNode(this.refs.item).value = '';
 	                _reactDom2.default.findDOMNode(this.refs.price).value = '';
 	                _reactDom2.default.findDOMNode(this.refs.quantity).value = '';
+	                _reactDom2.default.findDOMNode(this.refs.expiration).value = '';
 	                return;
 	        },
 	        render: function render() {
@@ -29404,18 +29543,23 @@
 	                                                ),
 	                                                _react2.default.createElement(
 	                                                        'div',
-	                                                        { className: 'col-md-3' },
+	                                                        { className: 'col-md-2' },
 	                                                        _react2.default.createElement('input', { type: 'text', id: 'item', ref: 'item', className: 'form-control', placeholder: 'Item Name' })
 	                                                ),
 	                                                _react2.default.createElement(
 	                                                        'div',
-	                                                        { className: 'col-md-3' },
+	                                                        { className: 'col-md-2' },
 	                                                        _react2.default.createElement('input', { type: 'text', id: 'price', ref: 'price', className: 'form-control', placeholder: 'Price' })
 	                                                ),
 	                                                _react2.default.createElement(
 	                                                        'div',
-	                                                        { className: 'col-md-3' },
+	                                                        { className: 'col-md-2' },
 	                                                        _react2.default.createElement('input', { type: 'text', id: 'quantity', ref: 'quantity', className: 'form-control', placeholder: 'Quantity' })
+	                                                ),
+	                                                _react2.default.createElement(
+	                                                        'div',
+	                                                        { className: 'col-md-2' },
+	                                                        _react2.default.createElement('input', { type: 'text', id: 'expiration', ref: 'expiration', className: 'form-control', placeholder: 'Expiration Date' })
 	                                                )
 	                                        ),
 	                                        _react2.default.createElement(

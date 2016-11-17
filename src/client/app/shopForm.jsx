@@ -10,11 +10,13 @@ var ShopForm = React.createClass({
                 }                
                 var price = ReactDOM.findDOMNode(this.refs.price).value.trim();
                 var quantity = ReactDOM.findDOMNode(this.refs.quantity).value.trim();
+                var expiration = ReactDOM.findDOMNode(this.refs.expiration).value.trim();
                 
-                this.props.onItemSubmit(item, price, quantity);
+                this.props.onItemSubmit(item, price, quantity, expiration);
                 ReactDOM.findDOMNode(this.refs.item).value = '';
                 ReactDOM.findDOMNode(this.refs.price).value = '';
                 ReactDOM.findDOMNode(this.refs.quantity).value = '';
+                ReactDOM.findDOMNode(this.refs.expiration).value = '';
                 return;
         },
         render: function() {
@@ -25,15 +27,18 @@ var ShopForm = React.createClass({
                                                 <div className="form-group">
                                                         <label htmlFor="item" className="col-md-2 control-label">New</label>
                                                         
-                                                        <div className="col-md-3">
+                                                        <div className="col-md-2">
                                                                 <input type="text" id="item" ref="item" className="form-control" placeholder="Item Name" />
                                                         </div>  
-                                                        <div className="col-md-3">
+                                                        <div className="col-md-2">
                                                                 <input type="text" id="price" ref="price" className="form-control" placeholder="Price" />
                                                         </div>    
-                                                        <div className="col-md-3">
+                                                        <div className="col-md-2">
                                                                 <input type="text" id="quantity" ref="quantity" className="form-control" placeholder="Quantity" />
-                                                        </div>                                                                                                                                                                      
+                                                        </div> 
+                                                        <div className="col-md-2">
+                                                                <input type="text" id="expiration" ref="expiration" className="form-control" placeholder="Expiration Date" />
+                                                        </div>                                                                                                                                                                     
                                                 </div>
                                                 <div className="row">
                                                         <div className="col-md-10 col-md-offset-2 text-right">

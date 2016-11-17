@@ -27,6 +27,20 @@ var ShopBox = React.createClass({
     generateId: function () {
         return Math.floor(Math.random()*90000) + 10000;
     },
+    getListId:  function (listType) {
+        var listType = this.state.listType;
+        var listId;
+        switch (listType) {
+            case 0:
+                listId = this.state.groceryListId;
+                break;
+            case 1:
+                listId = this.state.fridgeListId;
+                break;
+        } 
+
+        return listId;
+    },    
     handleNodeRemoval: function (nodeId) {
         // var data = this.state.data;
         // data = data.filter(function (el) {
@@ -37,7 +51,7 @@ var ShopBox = React.createClass({
         var me = this;
 
         var itemId = nodeId;
-        var listId = this.state.groceryListId;
+        var listId = this.getListId();
 
         var data = {
                token : this.state.authToken 
@@ -60,11 +74,11 @@ var ShopBox = React.createClass({
                 var itemName = list[i].name;
                 var price = list[i].price;
                 var quantity = list[i].quantity;
-                data = data.concat([{id, itemName, price, quantity}]); 
+                var expiration = list[i].expiration;
+                data = data.concat([{id, itemName, price, quantity, expiration}]); 
             }                                          
 
-            me.setState({data});
-            me.setState({groceryListId: listId})                                                        
+            me.setState({data});                                                                
             return;
           })
           .fail(function(err) {
@@ -74,19 +88,21 @@ var ShopBox = React.createClass({
 
         return;
     },
-    handleSubmit: function (item, price, quantity) {
+    handleSubmit: function (item, price, quantity, expiration) {
         // var data = this.state.data;
         var me = this;
         
         var itemPrice = price;
         var itemQuantity = quantity;
         var itemName = item;
-        var listId = this.state.groceryListId;
+        var listId = this.getListId();
+        var itemExpiration = expiration;
 
         var data = {                        
             name : itemName,
             quantity : itemQuantity,
             price : itemPrice,
+            expiration : itemExpiration,
             token : this.state.authToken
         }
 
@@ -109,11 +125,11 @@ var ShopBox = React.createClass({
                 var itemName = list[i].name;
                 var price = list[i].price;
                 var quantity = list[i].quantity;
-                data = data.concat([{id, itemName, price, quantity}]); 
+                var expiration = list[i].expiration;
+                data = data.concat([{id, itemName, price, quantity, expiration}]); 
             }                                          
 
-            me.setState({data});
-            me.setState({groceryListId: listId})                                                        
+            me.setState({data});                                                                
             return;
           })
           .fail(function(err) {
@@ -126,14 +142,53 @@ var ShopBox = React.createClass({
         return;
     },
     handleToggleComplete: function (nodeId) {
-        var data = this.state.data;
-        for (var i in data) {
-                if (data[i].id == nodeId) {
-                        data[i].complete = data[i].complete === 'true' ? 'false' : 'true';
-                        break;
-                }
-        }
-        this.setState({data});
+        // var data = this.state.data;
+        // for (var i in data) {
+        //         if (data[i].id == nodeId) {
+        //                 data[i].complete = data[i].complete === 'true' ? 'false' : 'true';
+        //                 break;
+        //         }
+        // }
+        // this.setState({data});
+
+        var me = this;
+
+        var itemId = nodeId;
+        var listId = this.getListId();
+
+        var data = {
+               token : this.state.authToken 
+        };
+
+        $.ajax({
+            method: "POST",                     
+            url: 'http://localhost:3000/v1/list/' + listId + '/item/' + itemId + '/done',                                                                                                          
+            data: data
+          })
+          .done(function(dataGet) {
+            console.log('successfully done from list');    
+
+            if (dataGet == '') {return};
+            var list = JSON.parse(dataGet);                    
+            var data = [];
+
+            for (var i = 0; i < list.length; i++) {
+                var id = list[i].id;
+                var itemName = list[i].name;
+                var price = list[i].price;
+                var quantity = list[i].quantity;
+                var expiration = list[i].expiration;
+                data = data.concat([{id, itemName, price, quantity, expiration}]); 
+            }                                          
+
+            me.setState({data});                                                                
+            return;
+          })
+          .fail(function(err) {
+            console.log('failed');
+            return;
+          });         
+
         return;
     },
     handleLogin: function (token) {
@@ -144,6 +199,49 @@ var ShopBox = React.createClass({
     },
     handleListChange: function(listId) {
         this.setState({listType: listId})
+        this.sync(listId);
+        return;
+    },
+    handleExpirationChange: function(nodeId, newExpiration) {
+        var me = this;
+
+        var itemId = nodeId;
+        var listId = this.getListId();
+
+        var data = {
+                expiration : newExpiration,
+                token : this.state.authToken
+        };
+
+        $.ajax({
+            method: "POST",
+            url: 'http://localhost:3000/v1/list/' + listId + '/item/' + itemId + '/update',
+            data: data
+          })
+          .done(function(dataGet) {
+            console.log('successfully done from list');
+
+            if (dataGet == '') {return};
+            var list = JSON.parse(dataGet);
+            var data = [];
+
+            for (var i = 0; i < list.length; i++) {
+                var id = list[i].id;
+                var itemName = list[i].name;
+                var price = list[i].price;
+                var quantity = list[i].quantity;
+                var expiration = list[i].expiration;
+                data = data.concat([{id, itemName, price, quantity, expiration}]);
+            }
+
+            me.setState({data});                                                                
+            return;
+          })
+          .fail(function(err) {
+            console.log('failed');
+            return;
+          });         
+        
         return;
     },
     getAllListId: function () {
@@ -151,25 +249,29 @@ var ShopBox = React.createClass({
         var me = this;
 
         $.ajax({
-            method: "POST",                     
-            url: 'http://localhost:3000/v1/lists',                                                                                                          
+            method: "POST",
+            url: 'http://localhost:3000/v1/lists',
             data: data
           })
           .done(function(data) {
-            console.log('successfully retrieved grocery list id');   
+            console.log('successfully retrieved list id');
+
             var list = JSON.parse(data);
+            var lid;
 
             for (var i = 0; i < list.length; i++) {
                 var name = list[i].name;
                 var id = list[i].id;
                 if (name == 'Grocery List') {
-                    me.setState({groceryListId: id})
+                    me.setState({groceryListId: id});
+                    lid = id;
                 }
                 else if (name == 'Fridge') {
-                    me.setState({fridgeListId: id})
+                    me.setState({fridgeListId: id});                    
+                    lid = id;
                 }
             }              
-            me.populateList();                                
+            me.populateList(lid);                                
             return;
           })
           .fail(function(err) {
@@ -177,8 +279,7 @@ var ShopBox = React.createClass({
             return;
           });   
     },
-    populateList: function () {
-        var listId = this.state.groceryListId;
+    populateList: function (listId) {                       
         var sendData = {"token": this.state.authToken}; 
         var me = this;
 
@@ -188,7 +289,7 @@ var ShopBox = React.createClass({
             data: sendData
           })
           .done(function(dataGet) {
-            console.log('successfully retrieved grocery list');                                        
+            console.log('successfully retrieved list ' + listId);                                        
             if (dataGet == '') {return};
             var list = JSON.parse(dataGet);
 
@@ -199,7 +300,8 @@ var ShopBox = React.createClass({
                 var itemName = list[i].name;
                 var price = list[i].price;
                 var quantity = list[i].quantity;
-                data = data.concat([{id, itemName, price, quantity}]); 
+                var expiration = list[i].expiration;
+                data = data.concat([{id, itemName, price, quantity, expiration}]); 
             }                    
 
             me.setState({data});            
@@ -213,24 +315,42 @@ var ShopBox = React.createClass({
     getListName: function (listId) {
         var names = ["Shopping List", "Fridge", "Recipe"];
         return names[listId];
-    },
-    sync: function () {
+    },    
+    sync: function (listType) {
         var loggedIn = this.state.loggedIn;
+        console.log("sycing");
 
         if (loggedIn) {  
-            var listType = this.state.listType;
+            if (listType == null) {
+                listType = this.state.listType;
+            }            
 
-            var groceryListId = this.state.groceryListId;
-            if (groceryListId == -1) {
-                    this.getAllListId();
-            }
-            else {
-                    this.populateList(groceryListId);
-            }
+            switch (listType) {
+                case 0: 
+                    var groceryListId = this.state.groceryListId;
+                    if (groceryListId == -1) {
+                            this.getAllListId();
+                    }
+                    else {
+                            this.populateList(groceryListId);
+                    }
+                    break;
+                case 1: 
+                    var fridgeListId = this.state.fridgeListId;
+                    if (fridgeListId == -1) {
+                            this.getAllListId();
+                    }
+                    else {
+                            this.populateList(fridgeListId);
+                    }
+                    break;
+                case 2: 
+                    break;
+            }            
         }       
         else {
             console.log("not logged in");
-        }         
+        }
 
         return;
     },
@@ -265,7 +385,7 @@ var ShopBox = React.createClass({
                     <TopBar changeList={this.handleListChange} curList={listType}/>
                     <div className="well vert-offset-top-2">                                          
                         <h1 className="vert-offset-top-0">{listName}:</h1>
-                        <ShopList data={data} removeNode={this.handleNodeRemoval} toggleComplete={this.handleToggleComplete} />
+                        <ShopList data={data} removeNode={this.handleNodeRemoval} toggleComplete={this.handleToggleComplete} changeExpiration={this.handleExpirationChange} curList={listType}/>
                         <ShopForm onItemSubmit={this.handleSubmit} />                                                                                                                                             
                     </div>
                 </div>

@@ -109,3 +109,10 @@
     text-align: center;
 }
 
+.btnCheck {
+    margin-right: 10px;
+}
+
+.itemList {
+    display:inline;
+}
