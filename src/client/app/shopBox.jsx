@@ -321,8 +321,13 @@ var ShopBox = React.createClass({
                 var sourceUrl = list[i].sourceUrl;
                 var title = list[i].title;
                 var text = list[i].text;
-                var ingredients = "placeholder";
+                var ingredientsList = JSON.parse(list[i].extendedIngredients).ingredients;
+                var ingredients = "";
                 var imageUrl = list[i].imageUrl;
+                for (var j = 0; j < ingredientsList.length; j++) {
+                    ingredients += "• " + ingredientsList[j].originalString + '\n';
+                };
+                
                 recipes = recipes.concat([{id, sourceUrl, title, text, ingredients, imageUrl}]);
             }
 
@@ -364,7 +369,7 @@ var ShopBox = React.createClass({
 
                 var d = new Date(expiration);
                 
-                if (n>d) {
+                if (n>d  && expiration != null) {
                     hasExpires = true;
                     expired += itemName + ' expired on: ' + expiration + '\n';
                 };

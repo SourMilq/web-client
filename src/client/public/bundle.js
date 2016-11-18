@@ -22330,8 +22330,13 @@
 	                var sourceUrl = list[i].sourceUrl;
 	                var title = list[i].title;
 	                var text = list[i].text;
-	                var ingredients = "placeholder";
+	                var ingredientsList = JSON.parse(list[i].extendedIngredients).ingredients;
+	                var ingredients = "";
 	                var imageUrl = list[i].imageUrl;
+	                for (var j = 0; j < ingredientsList.length; j++) {
+	                    ingredients += "• " + ingredientsList[j].originalString + '\n';
+	                };
+	
 	                recipes = recipes.concat([{ id: id, sourceUrl: sourceUrl, title: title, text: text, ingredients: ingredients, imageUrl: imageUrl }]);
 	            }
 	
@@ -22372,7 +22377,7 @@
 	
 	                var d = new Date(expiration);
 	
-	                if (n > d) {
+	                if (n > d && expiration != null) {
 	                    hasExpires = true;
 	                    expired += itemName + ' expired on: ' + expiration + '\n';
 	                };
@@ -29670,16 +29675,20 @@
 	                                ),
 	                                _react2.default.createElement(
 	                                        'div',
-	                                        { className: 'item-name-3 recipe-text col-xs-5 col-xl-5 col-md-5 pull-center ' },
+	                                        { className: 'item-name-3 recipe-text col-xs-4 col-xl-4 col-md-4 pull-center ' },
 	                                        ' ',
 	                                        this.props.itemText,
 	                                        ' '
 	                                ),
 	                                _react2.default.createElement(
 	                                        'div',
-	                                        { className: 'item-name-3 recipe-text col-xs-3 col-xl-3 col-md-3 pull-center ' },
+	                                        { className: 'item-name-3 recipe-text col-xs-4 col-xl-4 col-md-4 pull-center ' },
 	                                        ' ',
-	                                        this.props.itemIngredients,
+	                                        _react2.default.createElement(
+	                                                'pre',
+	                                                null,
+	                                                this.props.itemIngredients
+	                                        ),
 	                                        ' '
 	                                ),
 	                                _react2.default.createElement(
