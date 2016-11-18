@@ -21997,15 +21997,19 @@
 	
 	var _shopList2 = _interopRequireDefault(_shopList);
 	
-	var _shopForm = __webpack_require__(/*! ./shopForm.jsx */ 225);
+	var _recipeList = __webpack_require__(/*! ./recipeList.jsx */ 225);
+	
+	var _recipeList2 = _interopRequireDefault(_recipeList);
+	
+	var _shopForm = __webpack_require__(/*! ./shopForm.jsx */ 227);
 	
 	var _shopForm2 = _interopRequireDefault(_shopForm);
 	
-	var _topBar = __webpack_require__(/*! ./topBar.jsx */ 226);
+	var _topBar = __webpack_require__(/*! ./topBar.jsx */ 228);
 	
 	var _topBar2 = _interopRequireDefault(_topBar);
 	
-	var _login = __webpack_require__(/*! ./login.jsx */ 227);
+	var _login = __webpack_require__(/*! ./login.jsx */ 229);
 	
 	var _login2 = _interopRequireDefault(_login);
 	
@@ -22023,6 +22027,12 @@
 	            groceryListId: -1,
 	            fridgeListId: -1,
 	            listType: 0,
+	            offset: 0,
+	            recipes: [],
+	            // recipes : [
+	            //     {"id":"00001","sourceUrl":"http://allrecipes.com/recipe/218489/", "text":"Roast the walnuts in a dry frying pan over medium heat, stirring frequently, until golden brown and fragrant. Remove the pan from the heat, and pour walnuts onto a cutting board to cool slightly; coarsely chop the nuts.                        Heat the olive oil in a saucepan over medium heat. Stir in the shallots and garlic; cook and stir until the shallots have softened and turned translucent, about 3 minutes. Add the chopped walnuts, orange zest, orange juice, and cinnamon, and boil for 1 minute.                        Puree the mixture in a blender or food processor with 1 cup of vegetable stock. Return the soup to the saucepan and pour in the remaining 3 cups of vegetable stock.                        Bring to a boil; reduce the heat and simmer for 4 to 5 minutes. Remove from heat; stir in the yogurt, and season with salt and black pepper to taste. Garnish with chopped cilantro.", "title":"Turkish Walnut Soup", "imageUrl" : "http://farm4.static.flickr.com/3623/3279671785_d1f2e665b6_s.jpg", "ingredients" : "3/4 cup peeled, seeded, and shredded cucumber"},
+	            //     {"id":"00002","sourceUrl":"http://allrecipes.com/recipe/218490/", "text":"Preheat oven to 250 degrees F (120 degrees C). Line 2 baking sheets with parchment paper.                        Cut about 1/4 inch off a corner of a heavy gallon-size resealable plastic bag, and push a large-size cake decorating tip (such as a star tip) into the opening. The fit should be tight.                        In a small bowl, stir the gelatin mix with the sugar substitute. In a large bowl, using an electric mixer, beat the egg whites with cream of tartar and salt until stiff peaks form. As you beat the egg whites, gradually add the gelatin mixture, about 1 tablespoon at a time. Spoon the fluffy mixture into the prepared plastic bag, and gently squeeze and twist the bag to force the meringue mixture to the decorating tip. (Do not seal bag, so that air can escape.)                        Squeeze the bag to place golf-ball size dollops of meringue mixture onto the prepared baking sheets. For a decorative effect, twist and lift as you place the cookie on the sheet, to make a pretty shape.                        Bake in the preheated oven until the cookies are set and dry, about 1 hour and 30 minutes. Do not open oven door while baking. At end of baking time, turn off oven, open oven door, and allow the cookies to slowly cool in the oven before removing from baking sheets. Store in airtight container.", "title":"Low Carb Flavored Meringue Cookies", "imageUrl" : "https://spoonacular.com/recipeImages/829382-556x370.jpg", "ingredients" : "200 Weiners"},
+	            // ],
 	            data: []
 	            // data: [ // Stub
 	            //         {"id":"00001","itemName":"Apple", "price":"1.00", "quantity":"2"},
@@ -22282,6 +22292,43 @@
 	            return;
 	        });
 	    },
+	    populateRecipe: function populateRecipe(offset) {
+	        var me = this;
+	
+	        var data = {
+	            offset: offset,
+	            token: this.state.authToken
+	        };
+	
+	        $.ajax({
+	            method: "POST",
+	            url: 'http://localhost:3000/v1/recipe/',
+	            data: data
+	        }).done(function (dataGet) {
+	            console.log('successfully retrieved recipe');
+	            if (dataGet == '') {
+	                return;
+	            };
+	            var list = JSON.parse(dataGet);
+	
+	            var recipes = [];
+	
+	            for (var i = 0; i < list.length; i++) {
+	                var id = list[i].id;
+	                var sourceUrl = list[i].sourceUrl;
+	                var text = list[i].text;
+	                var ingredients = "placeholder";
+	                var imageUrl = list[i].imageUrl;
+	                recipes = recipes.concat([{ id: id, sourceUrl: sourceUrl, text: text, ingredients: ingredients, imageUrl: imageUrl }]);
+	            }
+	
+	            me.setState({ recipes: recipes });
+	            return;
+	        }).fail(function (err) {
+	            console.log('failed');
+	            return;
+	        });
+	    },
 	    populateList: function populateList(listId, doAlert) {
 	        var sendData = { "token": this.state.authToken };
 	        var me = this;
@@ -22362,6 +22409,8 @@
 	                    }
 	                    break;
 	                case 2:
+	                    var offset = this.state.offset;
+	                    this.populateRecipe(offset);
 	                    break;
 	            }
 	        } else {
@@ -22390,29 +22439,49 @@
 	
 	        // if (true) { // Stub
 	        if (loggedIn) {
-	            var data = this.state.data;
-	            var length = data.length;
-	
 	            var listType = this.state.listType;
 	            var listName = this.getListName(listType);
 	
-	            return _react2.default.createElement(
-	                'div',
-	                null,
-	                _react2.default.createElement(_topBar2.default, { changeList: this.handleListChange, curList: listType }),
-	                _react2.default.createElement(
+	            if (listType == 2) {
+	                var recipes = this.state.recipes;
+	
+	                return _react2.default.createElement(
 	                    'div',
-	                    { className: 'well vert-offset-top-2' },
+	                    null,
+	                    _react2.default.createElement(_topBar2.default, { changeList: this.handleListChange, curList: listType }),
 	                    _react2.default.createElement(
-	                        'h1',
-	                        { className: 'vert-offset-top-0' },
-	                        listName,
-	                        ':'
-	                    ),
-	                    _react2.default.createElement(_shopList2.default, { data: data, removeNode: this.handleNodeRemoval, toggleComplete: this.handleToggleComplete, changeExpiration: this.handleExpirationChange, curList: listType }),
-	                    _react2.default.createElement(_shopForm2.default, { onItemSubmit: this.handleSubmit })
-	                )
-	            );
+	                        'div',
+	                        { className: 'well vert-offset-top-2' },
+	                        _react2.default.createElement(
+	                            'h1',
+	                            { className: 'vert-offset-top-0' },
+	                            listName,
+	                            ':'
+	                        ),
+	                        _react2.default.createElement(_recipeList2.default, { data: recipes })
+	                    )
+	                );
+	            } else {
+	                var data = this.state.data;
+	
+	                return _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    _react2.default.createElement(_topBar2.default, { changeList: this.handleListChange, curList: listType }),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'well vert-offset-top-2' },
+	                        _react2.default.createElement(
+	                            'h1',
+	                            { className: 'vert-offset-top-0' },
+	                            listName,
+	                            ':'
+	                        ),
+	                        _react2.default.createElement(_shopList2.default, { data: data, removeNode: this.handleNodeRemoval, toggleComplete: this.handleToggleComplete, changeExpiration: this.handleExpirationChange, curList: listType }),
+	                        _react2.default.createElement(_shopForm2.default, { onItemSubmit: this.handleSubmit })
+	                    )
+	                );
+	            }
 	        } else {
 	            return _react2.default.createElement(_login2.default, { onLogin: this.handleLogin });
 	        }
@@ -29499,6 +29568,124 @@
 
 /***/ },
 /* 225 */
+/*!***************************************!*\
+  !*** ./src/client/app/recipeList.jsx ***!
+  \***************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	        value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _recipeItem = __webpack_require__(/*! ./recipeItem.jsx */ 226);
+	
+	var _recipeItem2 = _interopRequireDefault(_recipeItem);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var RecipeList = _react2.default.createClass({
+	        displayName: 'RecipeList',
+	
+	        render: function render() {
+	                var listNodes = this.props.data.map(function (listItem) {
+	                        return _react2.default.createElement(_recipeItem2.default, { key: listItem.id, nodeId: listItem.id, itemTitle: listItem.title, itemText: listItem.text, itemImage: listItem.imageUrl, itemIngredients: listItem.ingredients });
+	                }, this);
+	                return _react2.default.createElement(
+	                        'ul',
+	                        { className: 'list-group' },
+	                        listNodes
+	                );
+	        }
+	});
+	
+	exports.default = RecipeList;
+
+/***/ },
+/* 226 */
+/*!***************************************!*\
+  !*** ./src/client/app/recipeItem.jsx ***!
+  \***************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	        value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 34);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var RecipeItem = _react2.default.createClass({
+	        displayName: 'RecipeItem',
+	
+	        render: function render() {
+	                var classes = 'list-group-item clearfix';
+	                return _react2.default.createElement(
+	                        'li',
+	                        { className: classes },
+	                        _react2.default.createElement(
+	                                'div',
+	                                { className: 'row' },
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'item-name col-xs-1 col-xl-1 col-md-1 pull-left' },
+	                                        ' ',
+	                                        _react2.default.createElement('img', { src: this.props.itemImage, className: 'recipe-image' }),
+	                                        ' '
+	                                ),
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'item-name-2 recipe-title col-xs-2 col-xl-2 col-md-2 pull-center' },
+	                                        ' ',
+	                                        this.props.itemTitle,
+	                                        ' '
+	                                ),
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'item-name-3 recipe-text col-xs-5 col-xl-5 col-md-5 pull-center ' },
+	                                        ' ',
+	                                        this.props.itemText,
+	                                        ' '
+	                                ),
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'item-name-3 recipe-text col-xs-3 col-xl-3 col-md-3 pull-center ' },
+	                                        ' ',
+	                                        this.props.itemIngredients,
+	                                        ' '
+	                                ),
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'item-name-3 col-xs-1 col-xl-1 col-md-1 pull-right' },
+	                                        _react2.default.createElement(
+	                                                'button',
+	                                                { type: 'button', className: 'btn btn-xs btn-success img-circle pull-right btnCheck' },
+	                                                '+'
+	                                        )
+	                                )
+	                        )
+	                );
+	        }
+	});
+	
+	exports.default = RecipeItem;
+
+/***/ },
+/* 227 */
 /*!*************************************!*\
   !*** ./src/client/app/shopForm.jsx ***!
   \*************************************/
@@ -29597,7 +29784,7 @@
 	exports.default = ShopForm;
 
 /***/ },
-/* 226 */
+/* 228 */
 /*!***********************************!*\
   !*** ./src/client/app/topBar.jsx ***!
   \***********************************/
@@ -29706,7 +29893,7 @@
 	exports.default = TopBar;
 
 /***/ },
-/* 227 */
+/* 229 */
 /*!**********************************!*\
   !*** ./src/client/app/login.jsx ***!
   \**********************************/

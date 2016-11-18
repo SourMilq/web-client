@@ -116,3 +116,19 @@
 .itemList {
     display:inline;
 }
+
+.recipe-image {
+    width:100px;
+    height:100px;
+}
+
+.recipe-title {
+    font-family: arial;
+    font-size: 140%;
+    text-align: center;
+}
+
+.recipe-text {
+    height:110px;
+    overflow: scroll;
+}

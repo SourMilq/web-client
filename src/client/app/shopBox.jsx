@@ -1,6 +1,7 @@
 import React from 'react';
 import {Table, Column, Cell} from 'fixed-data-table';
 import ShopList from './shopList.jsx';
+import RecipeList from './recipeList.jsx';
 import ShopForm from './shopForm.jsx';
 import TopBar from './topBar.jsx';
 import Login from './login.jsx'
@@ -16,6 +17,12 @@ var ShopBox = React.createClass({
             groceryListId : -1,   
             fridgeListId : -1,   
             listType : 0,
+            offset : 0,
+            recipes: [],
+            // recipes : [
+            //     {"id":"00001","sourceUrl":"http://allrecipes.com/recipe/218489/", "text":"Roast the walnuts in a dry frying pan over medium heat, stirring frequently, until golden brown and fragrant. Remove the pan from the heat, and pour walnuts onto a cutting board to cool slightly; coarsely chop the nuts.                        Heat the olive oil in a saucepan over medium heat. Stir in the shallots and garlic; cook and stir until the shallots have softened and turned translucent, about 3 minutes. Add the chopped walnuts, orange zest, orange juice, and cinnamon, and boil for 1 minute.                        Puree the mixture in a blender or food processor with 1 cup of vegetable stock. Return the soup to the saucepan and pour in the remaining 3 cups of vegetable stock.                        Bring to a boil; reduce the heat and simmer for 4 to 5 minutes. Remove from heat; stir in the yogurt, and season with salt and black pepper to taste. Garnish with chopped cilantro.", "title":"Turkish Walnut Soup", "imageUrl" : "http://farm4.static.flickr.com/3623/3279671785_d1f2e665b6_s.jpg", "ingredients" : "3/4 cup peeled, seeded, and shredded cucumber"},
+            //     {"id":"00002","sourceUrl":"http://allrecipes.com/recipe/218490/", "text":"Preheat oven to 250 degrees F (120 degrees C). Line 2 baking sheets with parchment paper.                        Cut about 1/4 inch off a corner of a heavy gallon-size resealable plastic bag, and push a large-size cake decorating tip (such as a star tip) into the opening. The fit should be tight.                        In a small bowl, stir the gelatin mix with the sugar substitute. In a large bowl, using an electric mixer, beat the egg whites with cream of tartar and salt until stiff peaks form. As you beat the egg whites, gradually add the gelatin mixture, about 1 tablespoon at a time. Spoon the fluffy mixture into the prepared plastic bag, and gently squeeze and twist the bag to force the meringue mixture to the decorating tip. (Do not seal bag, so that air can escape.)                        Squeeze the bag to place golf-ball size dollops of meringue mixture onto the prepared baking sheets. For a decorative effect, twist and lift as you place the cookie on the sheet, to make a pretty shape.                        Bake in the preheated oven until the cookies are set and dry, about 1 hour and 30 minutes. Do not open oven door while baking. At end of baking time, turn off oven, open oven door, and allow the cookies to slowly cool in the oven before removing from baking sheets. Store in airtight container.", "title":"Low Carb Flavored Meringue Cookies", "imageUrl" : "https://spoonacular.com/recipeImages/829382-556x370.jpg", "ingredients" : "200 Weiners"},
+            // ],
             data : []                     
             // data: [ // Stub
             //         {"id":"00001","itemName":"Apple", "price":"1.00", "quantity":"2"},
@@ -135,8 +142,8 @@ var ShopBox = React.createClass({
           .fail(function(err) {
             console.log('failed');
             return;
-          });   
-        
+          });
+
         // data = data.concat([{id, itemName, price, quantity}]);
         // this.setState({data});
         return;
@@ -280,6 +287,44 @@ var ShopBox = React.createClass({
             return;
           });   
     },
+    populateRecipe: function(offset) {        
+        var me = this;
+
+        var data = {
+                offset : offset,                
+                token : this.state.authToken                
+        };
+
+        $.ajax({
+            method: "POST",                     
+            url: 'http://localhost:3000/v1/recipe/',
+            data: data
+          })
+          .done(function(dataGet) {
+            console.log('successfully retrieved recipe');
+            if (dataGet == '') {return};
+            var list = JSON.parse(dataGet);
+
+            var recipes = [];
+
+            for (var i = 0; i < list.length; i++) {
+                var id = list[i].id;
+                var sourceUrl = list[i].sourceUrl;
+                var text = list[i].text;
+                var ingredients = "placeholder";
+                var imageUrl = list[i].imageUrl;
+                recipes = recipes.concat([{id, sourceUrl, text, ingredients, imageUrl}]);
+            }
+
+            me.setState({recipes});            
+            return;
+        })
+          .fail(function(err) {
+            console.log('failed');
+            return;
+          });
+
+    },
     populateList: function (listId, doAlert) {                       
         var sendData = {"token": this.state.authToken}; 
         var me = this;
@@ -362,6 +407,8 @@ var ShopBox = React.createClass({
                     }
                     break;
                 case 2: 
+                    var offset = this.state.offset;
+                    this.populateRecipe(offset);
                     break;
             }            
         }       
@@ -390,28 +437,41 @@ var ShopBox = React.createClass({
         var loggedIn = this.state.loggedIn;
 
         // if (true) { // Stub
-        if (loggedIn) {                                               
-            var data = this.state.data;                
-            var length = data.length;
-
+        if (loggedIn) {           
             var listType = this.state.listType;
             var listName = this.getListName(listType);
-                      
-            return (        
+
+            if (listType == 2) {
+                var recipes = this.state.recipes;    
+
+                return (
                 <div>     
-                    <TopBar changeList={this.handleListChange} curList={listType}/>
-                    <div className="well vert-offset-top-2">                                          
-                        <h1 className="vert-offset-top-0">{listName}:</h1>
-                        <ShopList data={data} removeNode={this.handleNodeRemoval} toggleComplete={this.handleToggleComplete} changeExpiration={this.handleExpirationChange} curList={listType}/>
-                        <ShopForm onItemSubmit={this.handleSubmit} />                                                                                                                                             
+                        <TopBar changeList={this.handleListChange} curList={listType}/>
+                        <div className="well vert-offset-top-2">  
+                            <h1 className="vert-offset-top-0">{listName}:</h1>   
+                            <RecipeList data={recipes}/>                                     
+                        </div>
+                </div>                    
+                );
+            } else {
+                var data = this.state.data;                                
+                          
+                return (        
+                    <div>     
+                        <TopBar changeList={this.handleListChange} curList={listType}/>
+                        <div className="well vert-offset-top-2">                                          
+                            <h1 className="vert-offset-top-0">{listName}:</h1>
+                            <ShopList data={data} removeNode={this.handleNodeRemoval} toggleComplete={this.handleToggleComplete} changeExpiration={this.handleExpirationChange} curList={listType}/>
+                            <ShopForm onItemSubmit={this.handleSubmit} />                                                                                                                                             
+                        </div>
                     </div>
-                </div>
-            );
+                );
+            }            
         }
         else {
             return (
                 <Login onLogin={this.handleLogin}/>
-            )
+            );
         }           
             
     }
