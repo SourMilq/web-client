@@ -1,7 +1,8 @@
 import React from 'react';
 import {Table, Column, Cell} from 'fixed-data-table';
-import ShopList from './shopList.jsx';
 import RecipeList from './recipeList.jsx';
+import RecipeForm from './recipeForm.jsx';
+import ShopList from './shopList.jsx';
 import ShopForm from './shopForm.jsx';
 import TopBar from './topBar.jsx';
 import Login from './login.jsx'
@@ -252,6 +253,14 @@ var ShopBox = React.createClass({
         
         return;
     },
+    handlePageChange: function(increment) {
+        var oldOffset = this.state.offset;     
+        var newOffset = oldOffset + increment;           
+        this.populateRecipe(newOffset);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        this.setState({offset: newOffset});
+        return;
+    },
     getAllListId: function () {
         var data = {"token": this.state.authToken};
         var me = this;
@@ -310,10 +319,11 @@ var ShopBox = React.createClass({
             for (var i = 0; i < list.length; i++) {
                 var id = list[i].id;
                 var sourceUrl = list[i].sourceUrl;
+                var title = list[i].title;
                 var text = list[i].text;
                 var ingredients = "placeholder";
                 var imageUrl = list[i].imageUrl;
-                recipes = recipes.concat([{id, sourceUrl, text, ingredients, imageUrl}]);
+                recipes = recipes.concat([{id, sourceUrl, title, text, ingredients, imageUrl}]);
             }
 
             me.setState({recipes});            
@@ -449,7 +459,8 @@ var ShopBox = React.createClass({
                         <TopBar changeList={this.handleListChange} curList={listType}/>
                         <div className="well vert-offset-top-2">  
                             <h1 className="vert-offset-top-0">{listName}:</h1>   
-                            <RecipeList data={recipes}/>                                     
+                            <RecipeList data={recipes}/>          
+                            <RecipeForm onPageChange={this.handlePageChange} pageOffset={this.state.offset}/> 
                         </div>
                 </div>                    
                 );

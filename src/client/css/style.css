@@ -132,3 +132,7 @@
     height:110px;
     overflow: scroll;
 }
+
+.recipe-navbtn {
+    display:inline;
+}

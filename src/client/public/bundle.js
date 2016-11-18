@@ -21993,13 +21993,17 @@
 	
 	var _fixedDataTable = __webpack_require__(/*! fixed-data-table */ 173);
 	
-	var _shopList = __webpack_require__(/*! ./shopList.jsx */ 223);
-	
-	var _shopList2 = _interopRequireDefault(_shopList);
-	
 	var _recipeList = __webpack_require__(/*! ./recipeList.jsx */ 225);
 	
 	var _recipeList2 = _interopRequireDefault(_recipeList);
+	
+	var _recipeForm = __webpack_require__(/*! ./recipeForm.jsx */ 230);
+	
+	var _recipeForm2 = _interopRequireDefault(_recipeForm);
+	
+	var _shopList = __webpack_require__(/*! ./shopList.jsx */ 223);
+	
+	var _shopList2 = _interopRequireDefault(_shopList);
 	
 	var _shopForm = __webpack_require__(/*! ./shopForm.jsx */ 227);
 	
@@ -22260,6 +22264,14 @@
 	
 	        return;
 	    },
+	    handlePageChange: function handlePageChange(increment) {
+	        var oldOffset = this.state.offset;
+	        var newOffset = oldOffset + increment;
+	        this.populateRecipe(newOffset);
+	        $("html, body").animate({ scrollTop: 0 }, "slow");
+	        this.setState({ offset: newOffset });
+	        return;
+	    },
 	    getAllListId: function getAllListId() {
 	        var data = { "token": this.state.authToken };
 	        var me = this;
@@ -22316,10 +22328,11 @@
 	            for (var i = 0; i < list.length; i++) {
 	                var id = list[i].id;
 	                var sourceUrl = list[i].sourceUrl;
+	                var title = list[i].title;
 	                var text = list[i].text;
 	                var ingredients = "placeholder";
 	                var imageUrl = list[i].imageUrl;
-	                recipes = recipes.concat([{ id: id, sourceUrl: sourceUrl, text: text, ingredients: ingredients, imageUrl: imageUrl }]);
+	                recipes = recipes.concat([{ id: id, sourceUrl: sourceUrl, title: title, text: text, ingredients: ingredients, imageUrl: imageUrl }]);
 	            }
 	
 	            me.setState({ recipes: recipes });
@@ -22458,7 +22471,8 @@
 	                            listName,
 	                            ':'
 	                        ),
-	                        _react2.default.createElement(_recipeList2.default, { data: recipes })
+	                        _react2.default.createElement(_recipeList2.default, { data: recipes }),
+	                        _react2.default.createElement(_recipeForm2.default, { onPageChange: this.handlePageChange, pageOffset: this.state.offset })
 	                    )
 	                );
 	            } else {
@@ -30029,6 +30043,62 @@
 	});
 	
 	exports.default = Login;
+
+/***/ },
+/* 230 */
+/*!***************************************!*\
+  !*** ./src/client/app/recipeForm.jsx ***!
+  \***************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	        value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 34);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var RecipeForm = _react2.default.createClass({
+	        displayName: 'RecipeForm',
+	
+	        nextpage: function nextpage() {
+	                console.log("next page");
+	                this.props.onPageChange(10);
+	                return;
+	        },
+	        prevpage: function prevpage() {
+	                console.log("prev page");
+	                this.props.onPageChange(-10);
+	                return;
+	        },
+	        render: function render() {
+	                return _react2.default.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        _react2.default.createElement(
+	                                'div',
+	                                { className: 'col-md-4  text-right recipe-navbtn pull-left' },
+	                                _react2.default.createElement('input', { type: 'submit', value: 'Previous', className: "btn btn-primary " + (this.props.pageOffset != 0 ? 'show' : 'hidden'), onClick: this.prevpage })
+	                        ),
+	                        _react2.default.createElement(
+	                                'div',
+	                                { className: 'col-md-4 text-right recipe-navbtn pull-right' },
+	                                _react2.default.createElement('input', { type: 'submit', value: 'Next', className: 'btn btn-primary', onClick: this.nextpage })
+	                        )
+	                );
+	        }
+	});
+	
+	exports.default = RecipeForm;
 
 /***/ }
 /******/ ]);
