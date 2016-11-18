@@ -199,7 +199,8 @@ var ShopBox = React.createClass({
     },
     handleListChange: function(listId) {
         this.setState({listType: listId})
-        this.sync(listId);
+        this.sync(listId);        
+
         return;
     },
     handleExpirationChange: function(nodeId, newExpiration) {
@@ -271,7 +272,7 @@ var ShopBox = React.createClass({
                     lid = id;
                 }
             }              
-            me.populateList(lid);                                
+            me.populateList(lid, false);                                
             return;
           })
           .fail(function(err) {
@@ -279,7 +280,7 @@ var ShopBox = React.createClass({
             return;
           });   
     },
-    populateList: function (listId) {                       
+    populateList: function (listId, doAlert) {                       
         var sendData = {"token": this.state.authToken}; 
         var me = this;
 
@@ -314,7 +315,7 @@ var ShopBox = React.createClass({
                 };
             }                    
 
-            if (hasExpires) {
+            if (hasExpires && doAlert) {
                 alert(expired);    
             };
 
@@ -332,11 +333,13 @@ var ShopBox = React.createClass({
     },    
     sync: function (listType) {
         var loggedIn = this.state.loggedIn;
+        var doAlert = true;
         console.log("sycing");
 
         if (loggedIn) {  
             if (listType == null) {
                 listType = this.state.listType;
+                doAlert = false;
             }            
 
             switch (listType) {
@@ -346,7 +349,7 @@ var ShopBox = React.createClass({
                             this.getAllListId();
                     }
                     else {
-                            this.populateList(groceryListId);
+                            this.populateList(groceryListId, false);
                     }
                     break;
                 case 1: 
@@ -355,7 +358,7 @@ var ShopBox = React.createClass({
                             this.getAllListId();
                     }
                     else {
-                            this.populateList(fridgeListId);
+                            this.populateList(fridgeListId, doAlert);
                     }
                     break;
                 case 2: 

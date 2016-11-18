@@ -22205,6 +22205,7 @@
 	    handleListChange: function handleListChange(listId) {
 	        this.setState({ listType: listId });
 	        this.sync(listId);
+	
 	        return;
 	    },
 	    handleExpirationChange: function handleExpirationChange(nodeId, newExpiration) {
@@ -22274,14 +22275,14 @@
 	                    lid = id;
 	                }
 	            }
-	            me.populateList(lid);
+	            me.populateList(lid, false);
 	            return;
 	        }).fail(function (err) {
 	            console.log('failed');
 	            return;
 	        });
 	    },
-	    populateList: function populateList(listId) {
+	    populateList: function populateList(listId, doAlert) {
 	        var sendData = { "token": this.state.authToken };
 	        var me = this;
 	
@@ -22317,7 +22318,7 @@
 	                };
 	            }
 	
-	            if (hasExpires) {
+	            if (hasExpires && doAlert) {
 	                alert(expired);
 	            };
 	
@@ -22334,11 +22335,13 @@
 	    },
 	    sync: function sync(listType) {
 	        var loggedIn = this.state.loggedIn;
+	        var doAlert = true;
 	        console.log("sycing");
 	
 	        if (loggedIn) {
 	            if (listType == null) {
 	                listType = this.state.listType;
+	                doAlert = false;
 	            }
 	
 	            switch (listType) {
@@ -22347,7 +22350,7 @@
 	                    if (groceryListId == -1) {
 	                        this.getAllListId();
 	                    } else {
-	                        this.populateList(groceryListId);
+	                        this.populateList(groceryListId, false);
 	                    }
 	                    break;
 	                case 1:
@@ -22355,7 +22358,7 @@
 	                    if (fridgeListId == -1) {
 	                        this.getAllListId();
 	                    } else {
-	                        this.populateList(fridgeListId);
+	                        this.populateList(fridgeListId, doAlert);
 	                    }
 	                    break;
 	                case 2:
