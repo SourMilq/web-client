@@ -261,6 +261,30 @@ var ShopBox = React.createClass({
         this.setState({offset: newOffset});
         return;
     },
+    handleAddRecipe: function(recipeId) {
+        var me = this;
+
+        var data = {                
+                token : this.state.authToken
+        };
+
+        $.ajax({
+            method: "POST",
+            url: 'http://localhost:3000/v1/recipe/' + recipeId + '/add',
+            data: data
+          })
+          .done(function(dataGet) {
+            console.log('successfully added recipe ingredients');
+                                                                          
+            return;
+          })
+          .fail(function(err) {
+            console.log('failed');
+            return;
+          });
+
+        return;
+    },
     getAllListId: function () {
         var data = {"token": this.state.authToken};
         var me = this;
@@ -464,7 +488,7 @@ var ShopBox = React.createClass({
                         <TopBar changeList={this.handleListChange} curList={listType}/>
                         <div className="well vert-offset-top-2">  
                             <h1 className="vert-offset-top-0">{listName}:</h1>   
-                            <RecipeList data={recipes}/>          
+                            <RecipeList data={recipes} addRecipe={this.handleAddRecipe}/>          
                             <RecipeForm onPageChange={this.handlePageChange} pageOffset={this.state.offset}/> 
                         </div>
                 </div>                    

@@ -21993,27 +21993,27 @@
 	
 	var _fixedDataTable = __webpack_require__(/*! fixed-data-table */ 173);
 	
-	var _recipeList = __webpack_require__(/*! ./recipeList.jsx */ 225);
+	var _recipeList = __webpack_require__(/*! ./recipeList.jsx */ 223);
 	
 	var _recipeList2 = _interopRequireDefault(_recipeList);
 	
-	var _recipeForm = __webpack_require__(/*! ./recipeForm.jsx */ 230);
+	var _recipeForm = __webpack_require__(/*! ./recipeForm.jsx */ 225);
 	
 	var _recipeForm2 = _interopRequireDefault(_recipeForm);
 	
-	var _shopList = __webpack_require__(/*! ./shopList.jsx */ 223);
+	var _shopList = __webpack_require__(/*! ./shopList.jsx */ 226);
 	
 	var _shopList2 = _interopRequireDefault(_shopList);
 	
-	var _shopForm = __webpack_require__(/*! ./shopForm.jsx */ 227);
+	var _shopForm = __webpack_require__(/*! ./shopForm.jsx */ 228);
 	
 	var _shopForm2 = _interopRequireDefault(_shopForm);
 	
-	var _topBar = __webpack_require__(/*! ./topBar.jsx */ 228);
+	var _topBar = __webpack_require__(/*! ./topBar.jsx */ 229);
 	
 	var _topBar2 = _interopRequireDefault(_topBar);
 	
-	var _login = __webpack_require__(/*! ./login.jsx */ 229);
+	var _login = __webpack_require__(/*! ./login.jsx */ 230);
 	
 	var _login2 = _interopRequireDefault(_login);
 	
@@ -22272,6 +22272,28 @@
 	        this.setState({ offset: newOffset });
 	        return;
 	    },
+	    handleAddRecipe: function handleAddRecipe(recipeId) {
+	        var me = this;
+	
+	        var data = {
+	            token: this.state.authToken
+	        };
+	
+	        $.ajax({
+	            method: "POST",
+	            url: 'http://localhost:3000/v1/recipe/' + recipeId + '/add',
+	            data: data
+	        }).done(function (dataGet) {
+	            console.log('successfully added recipe ingredients');
+	
+	            return;
+	        }).fail(function (err) {
+	            console.log('failed');
+	            return;
+	        });
+	
+	        return;
+	    },
 	    getAllListId: function getAllListId() {
 	        var data = { "token": this.state.authToken };
 	        var me = this;
@@ -22476,7 +22498,7 @@
 	                            listName,
 	                            ':'
 	                        ),
-	                        _react2.default.createElement(_recipeList2.default, { data: recipes }),
+	                        _react2.default.createElement(_recipeList2.default, { data: recipes, addRecipe: this.handleAddRecipe }),
 	                        _react2.default.createElement(_recipeForm2.default, { onPageChange: this.handlePageChange, pageOffset: this.state.offset })
 	                    )
 	                );
@@ -29437,6 +29459,193 @@
 
 /***/ },
 /* 223 */
+/*!***************************************!*\
+  !*** ./src/client/app/recipeList.jsx ***!
+  \***************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	        value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _recipeItem = __webpack_require__(/*! ./recipeItem.jsx */ 224);
+	
+	var _recipeItem2 = _interopRequireDefault(_recipeItem);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var RecipeList = _react2.default.createClass({
+	        displayName: 'RecipeList',
+	
+	        addRecipe: function addRecipe(recipeId) {
+	                this.props.addRecipe(recipeId);
+	                return;
+	        },
+	        render: function render() {
+	                var listNodes = this.props.data.map(function (listItem) {
+	                        return _react2.default.createElement(_recipeItem2.default, { addRecipe: this.addRecipe, key: listItem.id, nodeId: listItem.id, itemTitle: listItem.title, itemText: listItem.text, itemImage: listItem.imageUrl, itemIngredients: listItem.ingredients });
+	                }, this);
+	                return _react2.default.createElement(
+	                        'ul',
+	                        { className: 'list-group' },
+	                        listNodes
+	                );
+	        }
+	});
+	
+	exports.default = RecipeList;
+
+/***/ },
+/* 224 */
+/*!***************************************!*\
+  !*** ./src/client/app/recipeItem.jsx ***!
+  \***************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	        value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 34);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var RecipeItem = _react2.default.createClass({
+	        displayName: 'RecipeItem',
+	
+	        addRecipe: function addRecipe(e) {
+	                e.preventDefault();
+	                this.props.addRecipe(this.props.nodeId);
+	                return;
+	        },
+	        render: function render() {
+	                var classes = 'list-group-item clearfix';
+	                return _react2.default.createElement(
+	                        'li',
+	                        { className: classes },
+	                        _react2.default.createElement(
+	                                'div',
+	                                { className: 'row' },
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'item-name col-xs-1 col-xl-1 col-md-1 pull-left' },
+	                                        ' ',
+	                                        _react2.default.createElement('img', { src: this.props.itemImage, className: 'recipe-image' }),
+	                                        ' '
+	                                ),
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'item-name-2 recipe-title col-xs-2 col-xl-2 col-md-2 pull-center' },
+	                                        ' ',
+	                                        this.props.itemTitle,
+	                                        ' '
+	                                ),
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'item-name-3 recipe-text col-xs-4 col-xl-4 col-md-4 pull-center ' },
+	                                        ' ',
+	                                        this.props.itemText,
+	                                        ' '
+	                                ),
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'item-name-3 recipe-text col-xs-4 col-xl-4 col-md-4 pull-center ' },
+	                                        ' ',
+	                                        _react2.default.createElement(
+	                                                'pre',
+	                                                null,
+	                                                this.props.itemIngredients
+	                                        ),
+	                                        ' '
+	                                ),
+	                                _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'item-name-3 col-xs-1 col-xl-1 col-md-1 pull-right' },
+	                                        _react2.default.createElement(
+	                                                'button',
+	                                                { type: 'button', className: 'btn btn-xs btn-success img-circle pull-right btnCheck', onClick: this.addRecipe },
+	                                                '+'
+	                                        )
+	                                )
+	                        )
+	                );
+	        }
+	});
+	
+	exports.default = RecipeItem;
+
+/***/ },
+/* 225 */
+/*!***************************************!*\
+  !*** ./src/client/app/recipeForm.jsx ***!
+  \***************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	        value: true
+	});
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 34);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var RecipeForm = _react2.default.createClass({
+	        displayName: 'RecipeForm',
+	
+	        nextpage: function nextpage() {
+	                console.log("next page");
+	                this.props.onPageChange(10);
+	                return;
+	        },
+	        prevpage: function prevpage() {
+	                console.log("prev page");
+	                this.props.onPageChange(-10);
+	                return;
+	        },
+	        render: function render() {
+	                return _react2.default.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        _react2.default.createElement(
+	                                'div',
+	                                { className: 'col-md-4  text-right recipe-navbtn pull-left' },
+	                                _react2.default.createElement('input', { type: 'submit', value: 'Previous', className: "btn btn-primary " + (this.props.pageOffset != 0 ? 'show' : 'hidden'), onClick: this.prevpage })
+	                        ),
+	                        _react2.default.createElement(
+	                                'div',
+	                                { className: 'col-md-4 text-right recipe-navbtn pull-right' },
+	                                _react2.default.createElement('input', { type: 'submit', value: 'Next', className: 'btn btn-primary', onClick: this.nextpage })
+	                        )
+	                );
+	        }
+	});
+	
+	exports.default = RecipeForm;
+
+/***/ },
+/* 226 */
 /*!*************************************!*\
   !*** ./src/client/app/shopList.jsx ***!
   \*************************************/
@@ -29452,7 +29661,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _shopItem = __webpack_require__(/*! ./shopItem.jsx */ 224);
+	var _shopItem = __webpack_require__(/*! ./shopItem.jsx */ 227);
 	
 	var _shopItem2 = _interopRequireDefault(_shopItem);
 	
@@ -29488,7 +29697,7 @@
 	exports.default = ShopList;
 
 /***/ },
-/* 224 */
+/* 227 */
 /*!*************************************!*\
   !*** ./src/client/app/shopItem.jsx ***!
   \*************************************/
@@ -29586,129 +29795,7 @@
 	exports.default = ShopItem;
 
 /***/ },
-/* 225 */
-/*!***************************************!*\
-  !*** ./src/client/app/recipeList.jsx ***!
-  \***************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	        value: true
-	});
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _recipeItem = __webpack_require__(/*! ./recipeItem.jsx */ 226);
-	
-	var _recipeItem2 = _interopRequireDefault(_recipeItem);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var RecipeList = _react2.default.createClass({
-	        displayName: 'RecipeList',
-	
-	        render: function render() {
-	                var listNodes = this.props.data.map(function (listItem) {
-	                        return _react2.default.createElement(_recipeItem2.default, { key: listItem.id, nodeId: listItem.id, itemTitle: listItem.title, itemText: listItem.text, itemImage: listItem.imageUrl, itemIngredients: listItem.ingredients });
-	                }, this);
-	                return _react2.default.createElement(
-	                        'ul',
-	                        { className: 'list-group' },
-	                        listNodes
-	                );
-	        }
-	});
-	
-	exports.default = RecipeList;
-
-/***/ },
-/* 226 */
-/*!***************************************!*\
-  !*** ./src/client/app/recipeItem.jsx ***!
-  \***************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	        value: true
-	});
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var RecipeItem = _react2.default.createClass({
-	        displayName: 'RecipeItem',
-	
-	        render: function render() {
-	                var classes = 'list-group-item clearfix';
-	                return _react2.default.createElement(
-	                        'li',
-	                        { className: classes },
-	                        _react2.default.createElement(
-	                                'div',
-	                                { className: 'row' },
-	                                _react2.default.createElement(
-	                                        'div',
-	                                        { className: 'item-name col-xs-1 col-xl-1 col-md-1 pull-left' },
-	                                        ' ',
-	                                        _react2.default.createElement('img', { src: this.props.itemImage, className: 'recipe-image' }),
-	                                        ' '
-	                                ),
-	                                _react2.default.createElement(
-	                                        'div',
-	                                        { className: 'item-name-2 recipe-title col-xs-2 col-xl-2 col-md-2 pull-center' },
-	                                        ' ',
-	                                        this.props.itemTitle,
-	                                        ' '
-	                                ),
-	                                _react2.default.createElement(
-	                                        'div',
-	                                        { className: 'item-name-3 recipe-text col-xs-4 col-xl-4 col-md-4 pull-center ' },
-	                                        ' ',
-	                                        this.props.itemText,
-	                                        ' '
-	                                ),
-	                                _react2.default.createElement(
-	                                        'div',
-	                                        { className: 'item-name-3 recipe-text col-xs-4 col-xl-4 col-md-4 pull-center ' },
-	                                        ' ',
-	                                        _react2.default.createElement(
-	                                                'pre',
-	                                                null,
-	                                                this.props.itemIngredients
-	                                        ),
-	                                        ' '
-	                                ),
-	                                _react2.default.createElement(
-	                                        'div',
-	                                        { className: 'item-name-3 col-xs-1 col-xl-1 col-md-1 pull-right' },
-	                                        _react2.default.createElement(
-	                                                'button',
-	                                                { type: 'button', className: 'btn btn-xs btn-success img-circle pull-right btnCheck' },
-	                                                '+'
-	                                        )
-	                                )
-	                        )
-	                );
-	        }
-	});
-	
-	exports.default = RecipeItem;
-
-/***/ },
-/* 227 */
+/* 228 */
 /*!*************************************!*\
   !*** ./src/client/app/shopForm.jsx ***!
   \*************************************/
@@ -29807,7 +29894,7 @@
 	exports.default = ShopForm;
 
 /***/ },
-/* 228 */
+/* 229 */
 /*!***********************************!*\
   !*** ./src/client/app/topBar.jsx ***!
   \***********************************/
@@ -29916,7 +30003,7 @@
 	exports.default = TopBar;
 
 /***/ },
-/* 229 */
+/* 230 */
 /*!**********************************!*\
   !*** ./src/client/app/login.jsx ***!
   \**********************************/
@@ -30052,62 +30139,6 @@
 	});
 	
 	exports.default = Login;
-
-/***/ },
-/* 230 */
-/*!***************************************!*\
-  !*** ./src/client/app/recipeForm.jsx ***!
-  \***************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	        value: true
-	});
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 34);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var RecipeForm = _react2.default.createClass({
-	        displayName: 'RecipeForm',
-	
-	        nextpage: function nextpage() {
-	                console.log("next page");
-	                this.props.onPageChange(10);
-	                return;
-	        },
-	        prevpage: function prevpage() {
-	                console.log("prev page");
-	                this.props.onPageChange(-10);
-	                return;
-	        },
-	        render: function render() {
-	                return _react2.default.createElement(
-	                        'div',
-	                        { className: 'row' },
-	                        _react2.default.createElement(
-	                                'div',
-	                                { className: 'col-md-4  text-right recipe-navbtn pull-left' },
-	                                _react2.default.createElement('input', { type: 'submit', value: 'Previous', className: "btn btn-primary " + (this.props.pageOffset != 0 ? 'show' : 'hidden'), onClick: this.prevpage })
-	                        ),
-	                        _react2.default.createElement(
-	                                'div',
-	                                { className: 'col-md-4 text-right recipe-navbtn pull-right' },
-	                                _react2.default.createElement('input', { type: 'submit', value: 'Next', className: 'btn btn-primary', onClick: this.nextpage })
-	                        )
-	                );
-	        }
-	});
-	
-	exports.default = RecipeForm;
 
 /***/ }
 /******/ ]);
