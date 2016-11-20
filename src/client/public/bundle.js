@@ -22461,7 +22461,7 @@
 	        });
 	    },
 	    getListName: function getListName(listId) {
-	        var names = ["Shopping List", "Fridge", "Recipe"];
+	        var names = ["Shopping List", "Fridge", "Recipe", "Suggested Recipes"];
 	        return names[listId];
 	    },
 	    sync: function sync(listType) {
@@ -30053,7 +30053,7 @@
 	                     _react2.default.createElement(
 	                        'a',
 	                        { href: '#' },
-	                        'Recommand'
+	                        'Suggest'
 	                     )
 	                  )
 	               )

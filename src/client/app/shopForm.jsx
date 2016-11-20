@@ -38,7 +38,7 @@ var ShopForm = React.createClass({
                                                         </div> 
                                                         <div className="col-md-2">
                                                                 <input type="text" id="expiration" ref="expiration" className="form-control" placeholder="Expiration Date" />
-                                                        </div>                                                                                                                                                                     
+                                                        </div>
                                                 </div>
                                                 <div className="row">
                                                         <div className="col-md-10 col-md-offset-2 text-right">

@@ -456,7 +456,7 @@ var ShopBox = React.createClass({
           });
     },
     getListName: function (listId) {
-        var names = ["Shopping List", "Fridge", "Recipe"];
+        var names = ["Shopping List", "Fridge", "Recipe", "Suggested Recipes"];
         return names[listId];
     },    
     sync: function (listType) {

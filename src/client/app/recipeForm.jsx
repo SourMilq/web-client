@@ -21,7 +21,7 @@ var RecipeForm = React.createClass({
                                 </div>                                                        
                                 <div className="col-md-4 text-right recipe-navbtn pull-right">
                                         <input type="submit" value="Next" className={"btn btn-primary " + (this.props.cl == 2 ? 'show' : 'hidden')} onClick={this.nextpage}/>
-                                </div>                                                                                                                                                                   
+                                </div>                                                                                                                                                               
                         </div>                                                                                        
                                          
                 );

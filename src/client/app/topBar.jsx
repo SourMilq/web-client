@@ -43,7 +43,7 @@ var TopBar = React.createClass({
                     <li className={(this.props.curList == 0 ? 'active' : '')} onClick={this.changeList0}><a href="#">Shopping List</a></li>
                     <li className={(this.props.curList == 1 ? 'active' : '')} onClick={this.changeList1}><a href="#">Fridge</a></li>
                     <li className={(this.props.curList == 2 ? 'active' : '')} onClick={this.changeList2}><a href="#">Recipes</a></li>  
-                    <li className={(this.props.curList == 3 ? 'active' : '')} onClick={this.changeList3}><a href="#">Recommand</a></li>  
+                    <li className={(this.props.curList == 3 ? 'active' : '')} onClick={this.changeList3}><a href="#">Suggest</a></li>  
                  </ul>
               </div>
            </div>
