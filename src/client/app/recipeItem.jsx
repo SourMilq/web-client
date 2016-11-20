@@ -17,7 +17,7 @@ var RecipeItem = React.createClass({
                                         <div className="item-name-3 recipe-text col-xs-4 col-xl-4 col-md-4 pull-center "> {this.props.itemText} </div>                                        
                                         <div className="item-name-3 recipe-text col-xs-4 col-xl-4 col-md-4 pull-center "> <pre>{this.props.itemIngredients}</pre> </div>                                        
                                         <div className="item-name-3 col-xs-1 col-xl-1 col-md-1 pull-right">
-                                                <button type="button" className="btn btn-xs btn-success img-circle pull-right btnCheck" onClick={this.addRecipe}>&#43;</button>                                                                                    
+                                                <button type="button" className={"btn btn-xs btn-success img-circle pull-right btnCheck " + (this.props.cl == 2 ? 'show' : 'hidden')} onClick={this.addRecipe}>&#43;</button>
                                         </div>
                                 </div>
                         </li>

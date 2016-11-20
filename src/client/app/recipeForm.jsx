@@ -17,10 +17,10 @@ var RecipeForm = React.createClass({
                                                         
                         <div className="row">
                                 <div className="col-md-4  text-right recipe-navbtn pull-left">
-                                        <input type="submit" value="Previous" className={"btn btn-primary " + (this.props.pageOffset != 0 ? 'show' : 'hidden')} onClick={this.prevpage} />
+                                        <input type="submit" value="Previous" className={"btn btn-primary " + (this.props.pageOffset != 0 && this.props.cl == 2 ? 'show' : 'hidden')} onClick={this.prevpage} />
                                 </div>                                                        
                                 <div className="col-md-4 text-right recipe-navbtn pull-right">
-                                        <input type="submit" value="Next" className="btn btn-primary" onClick={this.nextpage}/>
+                                        <input type="submit" value="Next" className={"btn btn-primary " + (this.props.cl == 2 ? 'show' : 'hidden')} onClick={this.nextpage}/>
                                 </div>                                                                                                                                                                   
                         </div>                                                                                        
                                          

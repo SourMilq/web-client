@@ -9,7 +9,7 @@ var RecipeList = React.createClass({
         render: function() {                
                 var listNodes = this.props.data.map(function (listItem) {
                 return (
-                        <RecipeItem addRecipe={this.addRecipe} key={listItem.id} nodeId={listItem.id} itemTitle={listItem.title} itemText={listItem.text} itemImage={listItem.imageUrl} itemIngredients={listItem.ingredients}/>
+                        <RecipeItem addRecipe={this.addRecipe} key={listItem.id} nodeId={listItem.id} itemTitle={listItem.title} itemText={listItem.text} itemImage={listItem.imageUrl} itemIngredients={listItem.ingredients} cl={this.props.curList}/>
                 );
                 },this);
                 return (

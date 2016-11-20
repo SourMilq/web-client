@@ -536,8 +536,8 @@ var ShopBox = React.createClass({
                         <TopBar changeList={this.handleListChange} curList={listType}/>
                         <div className="well vert-offset-top-2">  
                             <h1 className="vert-offset-top-0">{listName}:</h1>   
-                            <RecipeList data={recipes} addRecipe={this.handleAddRecipe}/>          
-                            <RecipeForm onPageChange={this.handlePageChange} pageOffset={this.state.offset}/> 
+                            <RecipeList data={recipes} addRecipe={this.handleAddRecipe} curList={listType}/>          
+                            <RecipeForm onPageChange={this.handlePageChange} pageOffset={this.state.offset} cl={listType}/> 
                         </div>
                 </div>                    
                 );

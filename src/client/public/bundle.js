@@ -22546,8 +22546,8 @@
 	                            listName,
 	                            ':'
 	                        ),
-	                        _react2.default.createElement(_recipeList2.default, { data: recipes, addRecipe: this.handleAddRecipe }),
-	                        _react2.default.createElement(_recipeForm2.default, { onPageChange: this.handlePageChange, pageOffset: this.state.offset })
+	                        _react2.default.createElement(_recipeList2.default, { data: recipes, addRecipe: this.handleAddRecipe, curList: listType }),
+	                        _react2.default.createElement(_recipeForm2.default, { onPageChange: this.handlePageChange, pageOffset: this.state.offset, cl: listType })
 	                    )
 	                );
 	            } else {
@@ -29537,7 +29537,7 @@
 	        },
 	        render: function render() {
 	                var listNodes = this.props.data.map(function (listItem) {
-	                        return _react2.default.createElement(_recipeItem2.default, { addRecipe: this.addRecipe, key: listItem.id, nodeId: listItem.id, itemTitle: listItem.title, itemText: listItem.text, itemImage: listItem.imageUrl, itemIngredients: listItem.ingredients });
+	                        return _react2.default.createElement(_recipeItem2.default, { addRecipe: this.addRecipe, key: listItem.id, nodeId: listItem.id, itemTitle: listItem.title, itemText: listItem.text, itemImage: listItem.imageUrl, itemIngredients: listItem.ingredients, cl: this.props.curList });
 	                }, this);
 	                return _react2.default.createElement(
 	                        'ul',
@@ -29625,7 +29625,7 @@
 	                                        { className: 'item-name-3 col-xs-1 col-xl-1 col-md-1 pull-right' },
 	                                        _react2.default.createElement(
 	                                                'button',
-	                                                { type: 'button', className: 'btn btn-xs btn-success img-circle pull-right btnCheck', onClick: this.addRecipe },
+	                                                { type: 'button', className: "btn btn-xs btn-success img-circle pull-right btnCheck " + (this.props.cl == 2 ? 'show' : 'hidden'), onClick: this.addRecipe },
 	                                                '+'
 	                                        )
 	                                )
@@ -29679,12 +29679,12 @@
 	                        _react2.default.createElement(
 	                                'div',
 	                                { className: 'col-md-4  text-right recipe-navbtn pull-left' },
-	                                _react2.default.createElement('input', { type: 'submit', value: 'Previous', className: "btn btn-primary " + (this.props.pageOffset != 0 ? 'show' : 'hidden'), onClick: this.prevpage })
+	                                _react2.default.createElement('input', { type: 'submit', value: 'Previous', className: "btn btn-primary " + (this.props.pageOffset != 0 && this.props.cl == 2 ? 'show' : 'hidden'), onClick: this.prevpage })
 	                        ),
 	                        _react2.default.createElement(
 	                                'div',
 	                                { className: 'col-md-4 text-right recipe-navbtn pull-right' },
-	                                _react2.default.createElement('input', { type: 'submit', value: 'Next', className: 'btn btn-primary', onClick: this.nextpage })
+	                                _react2.default.createElement('input', { type: 'submit', value: 'Next', className: "btn btn-primary " + (this.props.cl == 2 ? 'show' : 'hidden'), onClick: this.nextpage })
 	                        )
 	                );
 	        }
