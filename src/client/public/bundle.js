@@ -29678,12 +29678,12 @@
 	                        { className: 'row' },
 	                        _react2.default.createElement(
 	                                'div',
-	                                { className: 'col-md-4  text-right recipe-navbtn pull-left' },
+	                                { className: 'col-md-1  text-right recipe-navbtn pull-left' },
 	                                _react2.default.createElement('input', { type: 'submit', value: 'Previous', className: "btn btn-primary " + (this.props.pageOffset != 0 && this.props.cl == 2 ? 'show' : 'hidden'), onClick: this.prevpage })
 	                        ),
 	                        _react2.default.createElement(
 	                                'div',
-	                                { className: 'col-md-4 text-right recipe-navbtn pull-right' },
+	                                { className: 'col-md-1 text-right recipe-navbtn pull-right' },
 	                                _react2.default.createElement('input', { type: 'submit', value: 'Next', className: "btn btn-primary " + (this.props.cl == 2 ? 'show' : 'hidden'), onClick: this.nextpage })
 	                        )
 	                );
