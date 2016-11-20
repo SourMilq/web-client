@@ -19,6 +19,7 @@ var ShopBox = React.createClass({
             fridgeListId : -1,   
             listType : 0,
             offset : 0,
+            percentage: 100,
             recipes: [],
             // recipes : [
             //     {"id":"00001","sourceUrl":"http://allrecipes.com/recipe/218489/", "text":"Roast the walnuts in a dry frying pan over medium heat, stirring frequently, until golden brown and fragrant. Remove the pan from the heat, and pour walnuts onto a cutting board to cool slightly; coarsely chop the nuts.                        Heat the olive oil in a saucepan over medium heat. Stir in the shallots and garlic; cook and stir until the shallots have softened and turned translucent, about 3 minutes. Add the chopped walnuts, orange zest, orange juice, and cinnamon, and boil for 1 minute.                        Puree the mixture in a blender or food processor with 1 cup of vegetable stock. Return the soup to the saucepan and pour in the remaining 3 cups of vegetable stock.                        Bring to a boil; reduce the heat and simmer for 4 to 5 minutes. Remove from heat; stir in the yogurt, and season with salt and black pepper to taste. Garnish with chopped cilantro.", "title":"Turkish Walnut Soup", "imageUrl" : "http://farm4.static.flickr.com/3623/3279671785_d1f2e665b6_s.jpg", "ingredients" : "3/4 cup peeled, seeded, and shredded cucumber"},
@@ -320,6 +321,49 @@ var ShopBox = React.createClass({
             return;
           });   
     },
+    recommandRecipe: function(percentage) {        
+        var me = this;
+
+        var data = {
+                percentage : percentage,                
+                token : this.state.authToken                
+        };
+
+        $.ajax({
+            method: "POST",                     
+            url: 'http://localhost:3000/v1/recipe/suggest',
+            data: data
+          })
+          .done(function(dataGet) {
+            console.log('successfully recommanded recipe');
+            if (dataGet == '') {return};
+            var list = JSON.parse(dataGet);
+
+            var recipes = [];
+
+            for (var i = 0; i < list.length; i++) {
+                var id = list[i].id;
+                var sourceUrl = list[i].sourceUrl;
+                var title = list[i].title;
+                var text = list[i].text;
+                var ingredientsList = JSON.parse(list[i].extendedIngredients).ingredients;
+                var ingredients = "";
+                var imageUrl = list[i].imageUrl;
+                for (var j = 0; j < ingredientsList.length; j++) {
+                    ingredients +=   "• " + ingredientsList[j].originalString + '\n';
+                };
+                
+                recipes = recipes.concat([{id, sourceUrl, title, text, ingredients, imageUrl}]);
+            }
+
+            me.setState({recipes});            
+            return;
+        })
+          .fail(function(err) {
+            console.log('failed');
+            return;
+          });
+    },
     populateRecipe: function(offset) {        
         var me = this;
 
@@ -449,6 +493,10 @@ var ShopBox = React.createClass({
                     var offset = this.state.offset;
                     this.populateRecipe(offset);
                     break;
+                case 3:
+                    var percentage = this.state.percentage;
+                    this.recommandRecipe(percentage);
+                    break;
             }            
         }       
         else {
@@ -480,7 +528,7 @@ var ShopBox = React.createClass({
             var listType = this.state.listType;
             var listName = this.getListName(listType);
 
-            if (listType == 2) {
+            if (listType > 1) {
                 var recipes = this.state.recipes;    
 
                 return (

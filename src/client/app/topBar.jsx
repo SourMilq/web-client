@@ -19,7 +19,13 @@ var TopBar = React.createClass({
             console.log("2");
             this.props.changeList(2);
             return;
-    },        
+    },
+    changeList3: function (e) {
+            e.preventDefault();                            
+            console.log("3");
+            this.props.changeList(3);
+            return;
+    },
     render: function() {
       return (
         <div className="navbar navbar-inverse navbar-fixed-top">
@@ -36,7 +42,8 @@ var TopBar = React.createClass({
                  <ul className="nav navbar-nav navbar-right">
                     <li className={(this.props.curList == 0 ? 'active' : '')} onClick={this.changeList0}><a href="#">Shopping List</a></li>
                     <li className={(this.props.curList == 1 ? 'active' : '')} onClick={this.changeList1}><a href="#">Fridge</a></li>
-                    <li className={(this.props.curList == 2 ? 'active' : '')} onClick={this.changeList2}><a href="#">Recipe</a></li>  
+                    <li className={(this.props.curList == 2 ? 'active' : '')} onClick={this.changeList2}><a href="#">Recipes</a></li>  
+                    <li className={(this.props.curList == 3 ? 'active' : '')} onClick={this.changeList3}><a href="#">Recommand</a></li>  
                  </ul>
               </div>
            </div>
