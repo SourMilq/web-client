@@ -68,7 +68,7 @@ var ShopBox = React.createClass({
 
         $.ajax({
             method: "POST",                     
-            url: 'http://localhost:3002/v1/list/' + listId + '/item/' + itemId,                                                                                                          
+            url: 'http://104.236.150.151:3002/v1/list/' + listId + '/item/' + itemId,                                                                                                          
             data: data
           })
           .done(function(dataGet) {
@@ -117,7 +117,7 @@ var ShopBox = React.createClass({
 
         $.ajax({
             method: "POST",                     
-            url: 'http://localhost:3002/v1/list/' + listId + '/item/add',                                                                                                          
+            url: 'http://104.236.150.151:3002/v1/list/' + listId + '/item/add',                                                                                                          
             data: data
           })
           .done(function(dataGet) {
@@ -171,7 +171,7 @@ var ShopBox = React.createClass({
 
         $.ajax({
             method: "POST",                     
-            url: 'http://localhost:3002/v1/list/' + listId + '/item/' + itemId + '/done',                                                                                                          
+            url: 'http://104.236.150.151:3002/v1/list/' + listId + '/item/' + itemId + '/done',                                                                                                          
             data: data
           })
           .done(function(dataGet) {
@@ -225,7 +225,7 @@ var ShopBox = React.createClass({
 
         $.ajax({
             method: "POST",
-            url: 'http://localhost:3002/v1/list/' + listId + '/item/' + itemId + '/update',
+            url: 'http://104.236.150.151:3002/v1/list/' + listId + '/item/' + itemId + '/update',
             data: data
           })
           .done(function(dataGet) {
@@ -271,7 +271,7 @@ var ShopBox = React.createClass({
 
         $.ajax({
             method: "POST",
-            url: 'http://localhost:3002/v1/recipe/' + recipeId + '/add',
+            url: 'http://104.236.150.151:3002/v1/recipe/' + recipeId + '/add',
             data: data
           })
           .done(function(dataGet) {
@@ -292,7 +292,7 @@ var ShopBox = React.createClass({
 
         $.ajax({
             method: "POST",
-            url: 'http://localhost:3002/v1/lists',
+            url: 'http://104.236.150.151:3002/v1/lists',
             data: data
           })
           .done(function(data) {
@@ -331,7 +331,7 @@ var ShopBox = React.createClass({
 
         $.ajax({
             method: "POST",                     
-            url: 'http://localhost:3002/v1/recipe/suggest',
+            url: 'http://104.236.150.151:3002/v1/recipe/suggest',
             data: data
           })
           .done(function(dataGet) {
@@ -374,7 +374,7 @@ var ShopBox = React.createClass({
 
         $.ajax({
             method: "POST",                     
-            url: 'http://localhost:3002/v1/recipe/',
+            url: 'http://104.236.150.151:3002/v1/recipe/',
             data: data
           })
           .done(function(dataGet) {
@@ -414,7 +414,7 @@ var ShopBox = React.createClass({
 
         $.ajax({
             method: "POST",                     
-            url: 'http://localhost:3002/v1/list/' + listId,                                                                                                          
+            url: 'http://104.236.150.151:3002/v1/list/' + listId,                                                                                                          
             data: sendData
           })
           .done(function(dataGet) {
