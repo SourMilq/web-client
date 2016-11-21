@@ -15,7 +15,7 @@ var Login = React.createClass({
 
 			$.ajax({
 				method: "POST",			    
-			    url: 'http://localhost:3000/v1/user',			    			    			         			   
+			    url: 'http://localhost:3002/v1/user',			    			    			         			   
 			    data: data
 			  })
 			  .done(function(data) {
@@ -49,7 +49,7 @@ var Login = React.createClass({
 
 			$.ajax({
 				method: "POST",			    
-			    url: 'http://localhost:3000/v1/user/create/',			    			    			         			   
+			    url: 'http://localhost:3002/v1/user/create/',			    			    			         			   
 			    data: data
 			  })
 			  .done(function(data) {

@@ -22081,7 +22081,7 @@
 	
 	        $.ajax({
 	            method: "POST",
-	            url: 'http://localhost:3000/v1/list/' + listId + '/item/' + itemId,
+	            url: 'http://localhost:3002/v1/list/' + listId + '/item/' + itemId,
 	            data: data
 	        }).done(function (dataGet) {
 	            console.log('successfully delete from list');
@@ -22130,7 +22130,7 @@
 	
 	        $.ajax({
 	            method: "POST",
-	            url: 'http://localhost:3000/v1/list/' + listId + '/item/add',
+	            url: 'http://localhost:3002/v1/list/' + listId + '/item/add',
 	            data: data
 	        }).done(function (dataGet) {
 	            console.log('successfully add to list');
@@ -22182,7 +22182,7 @@
 	
 	        $.ajax({
 	            method: "POST",
-	            url: 'http://localhost:3000/v1/list/' + listId + '/item/' + itemId + '/done',
+	            url: 'http://localhost:3002/v1/list/' + listId + '/item/' + itemId + '/done',
 	            data: data
 	        }).done(function (dataGet) {
 	            console.log('successfully done from list');
@@ -22236,7 +22236,7 @@
 	
 	        $.ajax({
 	            method: "POST",
-	            url: 'http://localhost:3000/v1/list/' + listId + '/item/' + itemId + '/update',
+	            url: 'http://localhost:3002/v1/list/' + listId + '/item/' + itemId + '/update',
 	            data: data
 	        }).done(function (dataGet) {
 	            console.log('successfully done from list');
@@ -22282,7 +22282,7 @@
 	
 	        $.ajax({
 	            method: "POST",
-	            url: 'http://localhost:3000/v1/recipe/' + recipeId + '/add',
+	            url: 'http://localhost:3002/v1/recipe/' + recipeId + '/add',
 	            data: data
 	        }).done(function (dataGet) {
 	            console.log('successfully added recipe ingredients');
@@ -22301,7 +22301,7 @@
 	
 	        $.ajax({
 	            method: "POST",
-	            url: 'http://localhost:3000/v1/lists',
+	            url: 'http://localhost:3002/v1/lists',
 	            data: data
 	        }).done(function (data) {
 	            console.log('successfully retrieved list id');
@@ -22337,7 +22337,7 @@
 	
 	        $.ajax({
 	            method: "POST",
-	            url: 'http://localhost:3000/v1/recipe/suggest',
+	            url: 'http://localhost:3002/v1/recipe/suggest',
 	            data: data
 	        }).done(function (dataGet) {
 	            console.log('successfully recommanded recipe');
@@ -22380,7 +22380,7 @@
 	
 	        $.ajax({
 	            method: "POST",
-	            url: 'http://localhost:3000/v1/recipe/',
+	            url: 'http://localhost:3002/v1/recipe/',
 	            data: data
 	        }).done(function (dataGet) {
 	            console.log('successfully retrieved recipe');
@@ -22419,7 +22419,7 @@
 	
 	        $.ajax({
 	            method: "POST",
-	            url: 'http://localhost:3000/v1/list/' + listId,
+	            url: 'http://localhost:3002/v1/list/' + listId,
 	            data: sendData
 	        }).done(function (dataGet) {
 	            console.log('successfully retrieved list ' + listId);
@@ -30104,7 +30104,7 @@
 	
 			$.ajax({
 				method: "POST",
-				url: 'http://localhost:3000/v1/user',
+				url: 'http://localhost:3002/v1/user',
 				data: data
 			}).done(function (data) {
 				console.log('successfully logged in');
@@ -30136,7 +30136,7 @@
 	
 			$.ajax({
 				method: "POST",
-				url: 'http://localhost:3000/v1/user/create/',
+				url: 'http://localhost:3002/v1/user/create/',
 				data: data
 			}).done(function (data) {
 				console.log('successfully registered');
