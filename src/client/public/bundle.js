@@ -22520,7 +22520,7 @@
 	    },
 	    startPolling: function startPolling() {
 	        var self = this;
-	        self._timer = setInterval(self.sync, 10000);
+	        self._timer = setInterval(self.sync, 1000);
 	    },
 	    render: function render() {
 	        var loggedIn = this.state.loggedIn;
